@@ -5,9 +5,13 @@ using DG.Tweening;
 
 public class TileHandler : MonoBehaviour
 {
+    public enum TileTypes { Undefined, Grass, Mouse, Wolf}
+
     //refs
 
     [SerializeField] List<SpriteRenderer> _srs = new List<SpriteRenderer>();
+    [SerializeField] SpriteRenderer _iconSR = null;
+    [SerializeField] SpriteRenderer _borderSR = null;
 
     //settings
 
@@ -45,7 +49,6 @@ public class TileHandler : MonoBehaviour
     {
         //
         TileController.Instance.HandleTileClick(this);
-
     }
 
     public void RemoveTile()
@@ -76,5 +79,13 @@ public class TileHandler : MonoBehaviour
     {
         _slideTween.Kill();
         _slideTween = transform.DOBlendableMoveBy(new Vector3(direction.x, direction.y, 0), TileController.Instance.ClickTweenTime);
+    }
+
+    public void SetTile(TileTypeData icon)
+    {
+        //take in a TileDate struct
+        //rerender with new TileData
+        _iconSR.sprite = icon.TileIcon;
+        _borderSR.color = icon.TileColor;
     }
 }

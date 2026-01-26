@@ -8,14 +8,14 @@ public class TileController : MonoBehaviour
     public static TileController Instance { get; private set; }
 
     //ref
-
     [SerializeField] Transform _tileHolder = null;
     [SerializeField] TileHandler _tilePrefab = null;
+    [SerializeField] List<TileTypeData> _tileTypesRaw = null;
 
     //settings
-
     [SerializeField] int _arenaSize = 7;
-    public float ClickTweenTime { get; private set; } = 0.25f;
+    public float ClickTweenTime { get; private set; } = 0.45f;
+
 
     //statev
     [SerializeField] List<TileHandler> _tilesRaw = new List<TileHandler>();
@@ -52,6 +52,10 @@ public class TileController : MonoBehaviour
     {
         TileHandler newTile = Instantiate(_tilePrefab, _tileHolder);
         newTile.transform.position = location;
+
+        int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
+        newTile.SetTile(_tileTypesRaw[rand]);
+
         _tilesRaw.Add(newTile);
     }
 
@@ -60,6 +64,10 @@ public class TileController : MonoBehaviour
         TileHandler newTile = Instantiate(_tilePrefab, _tileHolder);
         newTile.transform.position = location;
         newTile.SlideTile(direction);
+
+        int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
+        newTile.SetTile(_tileTypesRaw[rand]);
+
         _tilesRaw.Add(newTile);
 
         //Debug.Log($"new tile created at {location}");
@@ -101,9 +109,15 @@ public class TileController : MonoBehaviour
 
     public void HandleTileClick(TileHandler clickedTile)
     {
+        CombineOrthogonalTiles();
         RemoveOrthogonalTiles(clickedTile);
         SlideTilesTowardsOriginTile(clickedTile);
         Invoke(nameof(RemapTileLocations), ClickTweenTime + 0.01f);
+    }
+
+    private void CombineOrthogonalTiles()
+    {
+        //throw new NotImplementedException();
     }
 
     private void RemoveOrthogonalTiles(TileHandler originTile)
@@ -167,9 +181,17 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                //gap detected, spawn new tile
-                CreateNewTile(walker, direction);
-                break;
+                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1)
+                {
+                    //gap detected, but because its an edge
+                    break;
+                }
+                else
+                {
+                    //gap detected, spawn new tile
+                    CreateNewTile(walker, direction);
+                    break;
+                }
             }
         }
 
@@ -188,9 +210,17 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                //gap detected, spawn new tile
-                CreateNewTile(walker, direction);
-                break;
+                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1)
+                {
+                    //gap detected, but because its an edge
+                    break;
+                }
+                else
+                {
+                    //gap detected, spawn new tile
+                    CreateNewTile(walker, direction);
+                    break;
+                }
             }
         }
 
@@ -209,9 +239,17 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                //gap detected, spawn new tile
-                CreateNewTile(walker, direction);
-                break;
+                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1)
+                {
+                    //gap detected, but because its an edge
+                    break;
+                }
+                else
+                {
+                    //gap detected, spawn new tile
+                    CreateNewTile(walker, direction);
+                    break;
+                }
             }
         }
 
@@ -230,9 +268,17 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                //gap detected, spawn new tile
-                CreateNewTile(walker, direction);
-                break;
+                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1)
+                {
+                    //gap detected, but because its an edge
+                    break;
+                }
+                else
+                {
+                    //gap detected, spawn new tile
+                    CreateNewTile(walker, direction);
+                    break;
+                }
             }
         }
 
