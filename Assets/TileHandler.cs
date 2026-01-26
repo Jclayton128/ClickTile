@@ -22,6 +22,7 @@ public class TileHandler : MonoBehaviour
     Tween _sizeTween;
     Tween _slideTween;
     Collider2D _coll;
+    public TileTypeData TyleType { get; private set; }
 
     private void Awake()
     {
@@ -81,11 +82,12 @@ public class TileHandler : MonoBehaviour
         _slideTween = transform.DOBlendableMoveBy(new Vector3(direction.x, direction.y, 0), TileController.Instance.ClickTweenTime);
     }
 
-    public void SetTile(TileTypeData icon)
+    public void SetTile(TileTypeData tileType)
     {
+        TyleType = tileType;
         //take in a TileDate struct
         //rerender with new TileData
-        _iconSR.sprite = icon.TileIcon;
-        _borderSR.color = icon.TileColor;
+        _iconSR.sprite = tileType.TileIcon;
+        _borderSR.color = tileType.TileColor;
     }
 }

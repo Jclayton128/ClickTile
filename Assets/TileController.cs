@@ -20,7 +20,8 @@ public class TileController : MonoBehaviour
     //statev
     [SerializeField] List<TileHandler> _tilesRaw = new List<TileHandler>();
     Dictionary<Vector2Int, TileHandler> _tilesLocation = new Dictionary<Vector2Int, TileHandler>();
-
+    
+    #region Arena Setup
 
     private void Awake()
     {
@@ -107,20 +108,65 @@ public class TileController : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region Gameplay
     public void HandleTileClick(TileHandler clickedTile)
     {
-        CombineOrthogonalTiles();
-        RemoveOrthogonalTiles(clickedTile);
+        List<TileHandler> orthoTiles = GetOrthogonalTiles(clickedTile);
+        List<TileHandler> consumableOrthoTiles = PruneNonconsumableOrthoTiles(clickedTile, orthoTiles);
+        RemoveConsumedTiles(clickedTile);
         SlideTilesTowardsOriginTile(clickedTile);
         Invoke(nameof(RemapTileLocations), ClickTweenTime + 0.01f);
     }
 
-    private void CombineOrthogonalTiles()
+    private List<TileHandler> GetOrthogonalTiles(TileHandler originTile)
     {
-        //throw new NotImplementedException();
+        List<TileHandler> orthoTiles = new List<TileHandler>();
+
+        Vector2Int origin = GetVec2Int(originTile);
+
+        Vector2Int walker = origin;
+        walker.x -= 1;
+        if (_tilesLocation.ContainsKey(walker))
+        {
+            orthoTiles.Add(_tilesLocation[walker]);
+        }
+
+        walker = origin;
+        walker.x += 1;
+        if (_tilesLocation.ContainsKey(walker))
+        {
+            orthoTiles.Add(_tilesLocation[walker]);
+        }
+
+        walker = origin;
+        walker.y -= 1;
+        if (_tilesLocation.ContainsKey(walker))
+        {
+            orthoTiles.Add(_tilesLocation[walker]);
+        }
+
+        walker = origin;
+        walker.y += 1;
+        if (_tilesLocation.ContainsKey(walker))
+        {
+            orthoTiles.Add(_tilesLocation[walker]);
+        }
+
+        return orthoTiles;
     }
 
-    private void RemoveOrthogonalTiles(TileHandler originTile)
+    private List<TileHandler> PruneNonconsumableOrthoTiles(TileHandler clickedTile, List<TileHandler> orthoTiles)
+    {
+        List<TileHandler> consumableOrthoTiles = new List<TileHandler>();
+        //foreach ortho tile, compare it against the clicked Tile's TileType.
+
+
+        return consumableOrthoTiles;
+    }
+
+    private void RemoveConsumedTiles(TileHandler originTile)
     {
         Vector2Int origin = GetVec2Int(originTile);
 
@@ -170,7 +216,7 @@ public class TileController : MonoBehaviour
         Vector2Int walker = origin;
         Vector2Int direction = Vector2Int.zero;
         direction.x = 1;
-        for (int i = 2; i < _arenaSize; i++)
+        for (int i = 2; i < 99; i++)
         {
             walker.x = origin.x - i;
 
@@ -181,7 +227,7 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1)
+                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
                 {
                     //gap detected, but because its an edge
                     break;
@@ -210,7 +256,7 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1)
+                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
                 {
                     //gap detected, but because its an edge
                     break;
@@ -239,7 +285,7 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1)
+                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
                 {
                     //gap detected, but because its an edge
                     break;
@@ -268,7 +314,7 @@ public class TileController : MonoBehaviour
             }
             else
             {
-                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1)
+                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
                 {
                     //gap detected, but because its an edge
                     break;
@@ -284,5 +330,5 @@ public class TileController : MonoBehaviour
 
     }
 
-
+    #endregion
 }
