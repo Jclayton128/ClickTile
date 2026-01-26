@@ -115,8 +115,11 @@ public class TileController : MonoBehaviour
     {
         List<TileHandler> orthoTiles = GetOrthogonalTiles(clickedTile);
         List<TileHandler> consumableOrthoTiles = PruneNonconsumableOrthoTiles(clickedTile, orthoTiles);
-        RemoveConsumedTiles(clickedTile);
-        SlideTilesTowardsOriginTile(clickedTile);
+        RemoveConsumedTiles(clickedTile, consumableOrthoTiles);
+        SlideTilesTowardsOriginTile(clickedTile, consumableOrthoTiles);
+
+        //VibrateNonconsumedOrthoTiles
+
         Invoke(nameof(RemapTileLocations), ClickTweenTime + 0.01f);
     }
 
@@ -160,45 +163,63 @@ public class TileController : MonoBehaviour
     private List<TileHandler> PruneNonconsumableOrthoTiles(TileHandler clickedTile, List<TileHandler> orthoTiles)
     {
         List<TileHandler> consumableOrthoTiles = new List<TileHandler>();
-        //foreach ortho tile, compare it against the clicked Tile's TileType.
 
+        foreach (var tile in orthoTiles)
+        {
+            //foreach ortho tile, compare it against the clicked Tile's TileType.
+
+            if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
+            {
+                consumableOrthoTiles.Add(tile);
+            }
+        }
 
         return consumableOrthoTiles;
     }
 
-    private void RemoveConsumedTiles(TileHandler originTile)
+    private void RemoveConsumedTiles(TileHandler originTile, List<TileHandler> consumableOrthoTiles)
     {
         Vector2Int origin = GetVec2Int(originTile);
 
         Vector2Int walker = origin;
+
+        Dictionary<Vector2Int, TileHandler> consumableTileLocations = new Dictionary<Vector2Int, TileHandler>();
+        foreach (var tile in consumableOrthoTiles)
+        {
+            Vector2Int vec2 = Vector2Int.zero;
+            vec2.x = Mathf.RoundToInt(tile.transform.position.x);
+            vec2.y = Mathf.RoundToInt(tile.transform.position.y);
+            consumableTileLocations.Add(vec2, tile);
+        }
+
         walker.x -= 1;
         Vector2Int direction = new Vector2Int(1, 0);
-        if (_tilesLocation.ContainsKey(walker))
+        if (consumableTileLocations.ContainsKey(walker))
         {
-            _tilesLocation[walker].AbsorbTile(direction);
+            consumableTileLocations[walker].AbsorbTile(direction);
         }
 
         walker = origin;
         walker.x += 1;
         direction = new Vector2Int(-1, 0);
-        if (_tilesLocation.ContainsKey(walker))
+        if (consumableTileLocations.ContainsKey(walker))
         {
-            _tilesLocation[walker].AbsorbTile(direction);
+            consumableTileLocations[walker].AbsorbTile(direction);
         }
         walker = origin;
         walker.y -= 1;
         direction = new Vector2Int(0, 1);
-        if (_tilesLocation.ContainsKey(walker))
+        if (consumableTileLocations.ContainsKey(walker))
         {
-            _tilesLocation[walker].AbsorbTile(direction);
+            consumableTileLocations[walker].AbsorbTile(direction);
         }
 
         walker = origin;
         walker.y += 1;
         direction = new Vector2Int(0, -1);
-        if (_tilesLocation.ContainsKey(walker))
+        if (consumableTileLocations.ContainsKey(walker))
         {
-            _tilesLocation[walker].AbsorbTile(direction);
+            consumableTileLocations[walker].AbsorbTile(direction);
         }
     }
 
@@ -208,122 +229,146 @@ public class TileController : MonoBehaviour
         _tilesRaw.Remove(tile);
     }
 
-    private void SlideTilesTowardsOriginTile(TileHandler originTile)
+    private void SlideTilesTowardsOriginTile(TileHandler originTile, List<TileHandler> consumableOrthoTiles)
     {
         Vector2Int origin = GetVec2Int(originTile);
 
-        //Slide western tiles to the east
+        Dictionary<Vector2Int, TileHandler> consumableTileLocations = new Dictionary<Vector2Int, TileHandler>();
+        foreach (var tile in consumableOrthoTiles)
+        {
+            Vector2Int vec2 = Vector2Int.zero;
+            vec2.x = Mathf.RoundToInt(tile.transform.position.x);
+            vec2.y = Mathf.RoundToInt(tile.transform.position.y);
+            consumableTileLocations.Add(vec2, tile);
+        }
+
         Vector2Int walker = origin;
         Vector2Int direction = Vector2Int.zero;
-        direction.x = 1;
-        for (int i = 2; i < 99; i++)
+        if (consumableTileLocations.ContainsKey(new Vector2Int(origin.x-1, origin.y)))
         {
-            walker.x = origin.x - i;
+            //Slide western tiles to the east
+
+            direction.x = 1;
+            for (int i = 2; i < 99; i++)
+            {
+                walker.x = origin.x - i;
 
 
-            if (_tilesLocation.ContainsKey(walker))
-            {
-                _tilesLocation[walker].SlideTile(direction);
-            }
-            else
-            {
-                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
+                if (_tilesLocation.ContainsKey(walker))
                 {
-                    //gap detected, but because its an edge
-                    break;
+                    _tilesLocation[walker].SlideTile(direction);
                 }
                 else
                 {
-                    //gap detected, spawn new tile
-                    CreateNewTile(walker, direction);
-                    break;
+                    if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
+                    {
+                        //gap detected, but because its an edge
+                        break;
+                    }
+                    else
+                    {
+                        //gap detected, spawn new tile
+                        CreateNewTile(walker, direction);
+                        break;
+                    }
                 }
             }
         }
 
-        //slide eastern tiles to the west
-        walker = origin;
-        direction = Vector2Int.zero;
-        direction.x = -1;
-        for (int i = 2; i < 99; i++)
+        if (consumableTileLocations.ContainsKey(new Vector2Int(origin.x + 1, origin.y)))
         {
-            walker.x = origin.x + i;
+
+            //slide eastern tiles to the west
+            walker = origin;
+            direction = Vector2Int.zero;
+            direction.x = -1;
+            for (int i = 2; i < 99; i++)
+            {
+                walker.x = origin.x + i;
 
 
-            if (_tilesLocation.ContainsKey(walker))
-            {
-                _tilesLocation[walker].SlideTile(direction);
-            }
-            else
-            {
-                if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
+                if (_tilesLocation.ContainsKey(walker))
                 {
-                    //gap detected, but because its an edge
-                    break;
+                    _tilesLocation[walker].SlideTile(direction);
                 }
                 else
                 {
-                    //gap detected, spawn new tile
-                    CreateNewTile(walker, direction);
-                    break;
+                    if (Mathf.Abs(walker.x) > ((_arenaSize - 1) / 2) + 1.1f)
+                    {
+                        //gap detected, but because its an edge
+                        break;
+                    }
+                    else
+                    {
+                        //gap detected, spawn new tile
+                        CreateNewTile(walker, direction);
+                        break;
+                    }
                 }
             }
         }
 
-        //slide northern tiles to the south
-        walker = origin;
-        direction = Vector2Int.zero;
-        direction.y = -1;
-        for (int i = 2; i < 99; i++)
+        if (consumableTileLocations.ContainsKey(new Vector2Int(origin.x, origin.y + 1)))
         {
-            walker.y = origin.y + i;
+            //slide northern tiles to the south
+            walker = origin;
+            direction = Vector2Int.zero;
+            direction.y = -1;
+            for (int i = 2; i < 99; i++)
+            {
+                walker.y = origin.y + i;
 
 
-            if (_tilesLocation.ContainsKey(walker))
-            {
-                _tilesLocation[walker].SlideTile(direction);
-            }
-            else
-            {
-                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
+                if (_tilesLocation.ContainsKey(walker))
                 {
-                    //gap detected, but because its an edge
-                    break;
+                    _tilesLocation[walker].SlideTile(direction);
                 }
                 else
                 {
-                    //gap detected, spawn new tile
-                    CreateNewTile(walker, direction);
-                    break;
+                    if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
+                    {
+                        //gap detected, but because its an edge
+                        break;
+                    }
+                    else
+                    {
+                        //gap detected, spawn new tile
+                        CreateNewTile(walker, direction);
+                        break;
+                    }
                 }
             }
         }
 
-        //slide southern tiles to the north
-        walker = origin;
-        direction = Vector2Int.zero;
-        direction.y = 1;
-        for (int i = 2; i < 99; i++)
+        if (consumableTileLocations.ContainsKey(new Vector2Int(origin.x, origin.y - 1)))
         {
-            walker.y = origin.y - i;
+
+            //slide southern tiles to the north
+            walker = origin;
+            direction = Vector2Int.zero;
+            direction.y = 1;
+            for (int i = 2; i < 99; i++)
+            {
+                walker.y = origin.y - i;
 
 
-            if (_tilesLocation.ContainsKey(walker))
-            {
-                _tilesLocation[walker].SlideTile(direction);
-            }
-            else
-            {
-                if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
+                if (_tilesLocation.ContainsKey(walker))
                 {
-                    //gap detected, but because its an edge
-                    break;
+                    _tilesLocation[walker].SlideTile(direction);
                 }
                 else
                 {
-                    //gap detected, spawn new tile
-                    CreateNewTile(walker, direction);
-                    break;
+                    if (Mathf.Abs(walker.y) > ((_arenaSize - 1) / 2) + 1.1f)
+                    {
+                        //gap detected, but because its an edge
+                        break;
+                    }
+                    else
+                    {
+                        //gap detected, spawn new tile
+                        CreateNewTile(walker, direction);
+                        break;
+                    }
                 }
             }
         }

@@ -22,7 +22,7 @@ public class TileHandler : MonoBehaviour
     Tween _sizeTween;
     Tween _slideTween;
     Collider2D _coll;
-    public TileTypeData TyleType { get; private set; }
+    public TileTypeData TileData { get; private set; }
 
     private void Awake()
     {
@@ -84,7 +84,8 @@ public class TileHandler : MonoBehaviour
 
     public void SetTile(TileTypeData tileType)
     {
-        TyleType = tileType;
+        TileData = tileType;
+
         //take in a TileDate struct
         //rerender with new TileData
         _iconSR.sprite = tileType.TileIcon;
