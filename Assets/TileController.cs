@@ -141,11 +141,11 @@ public class TileController : MonoBehaviour
         GainPowerFromConsumedTiles();
 
         RemoveConsumedTiles();
-        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime);
+        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime + 0.01f);
 
         //VibrateNonconsumedOrthoTiles
 
-        float timeToComplete = ClickTweenTime + ClickTweenTime + 0.01f;
+        float timeToComplete = ClickTweenTime + ClickTweenTime + 0.02f;
         Invoke(nameof(RemapTileLocations), timeToComplete);
         Invoke(nameof(HandleClickProcessingComplete), timeToComplete);
     }
@@ -438,6 +438,27 @@ public class TileController : MonoBehaviour
     private void HandleClickProcessingComplete()
     {
         _isProcessingClick = false;
+    }
+
+    #endregion
+
+    #region All Tile Effects
+
+    public void DimAllTiles()
+    {
+        foreach (var tile in _tilesRaw)
+        {
+            tile.DimTile();
+        }
+    }
+
+    public void HalfdimOrthogonalTiles(TileHandler hoveredTile)
+    {
+        List<TileHandler> orthoTiles = GetOrthogonalTiles(hoveredTile);
+        foreach (var tile in orthoTiles)
+        {
+            tile.HalfdimTile();
+        }
     }
 
     #endregion

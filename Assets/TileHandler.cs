@@ -24,6 +24,7 @@ public class TileHandler : MonoBehaviour
     
     Tween _hoverTween;
     Tween _slideTween;
+    Tween _colorTween;
     Collider2D _coll;
     public TileTypeData TileData { get; private set; }
 
@@ -42,6 +43,10 @@ public class TileHandler : MonoBehaviour
 
         _hoverTween.Kill();
         _hoverTween = _iconSR.transform.DOLocalMoveY(0.1f, hoverTweenTime).SetEase(Ease.OutBack);
+
+        TileController.Instance.DimAllTiles();
+        TileController.Instance.HalfdimOrthogonalTiles(this);
+        BrightenTile();
     }
 
     private void OnMouseExit()
@@ -53,6 +58,9 @@ public class TileHandler : MonoBehaviour
 
         _hoverTween.Kill();
         _hoverTween = _iconSR.transform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
+
+        DimTile();
+
     }
 
     private void OnMouseUpAsButton()
@@ -81,11 +89,11 @@ public class TileHandler : MonoBehaviour
         //SlideTile(direction);
 
         _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
-        _iconSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime);
+        _iconSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
 
 
         //_sizeTween.Kill();
-        //_sizeTween = transform.DOScale(Vector2.zero, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+        //_sizeTween = transform.DOScale(Vector2.zero, TileController.Instance.ClickTweenTime)
 
         //foreach (var sr in _srs)
         //{
@@ -113,9 +121,21 @@ public class TileHandler : MonoBehaviour
         _herdTMP.text = tileType.Monoletter;
     }
 
-    public void IncrementHerdSize(int amountToAdd)
+    public void DimTile()
     {
-        //_herdSize += amountToAdd;
-        //_herdTMP.text = string.Format("{0:F1}", $"{HerdSizeBonus}");
+        _colorTween.Kill();
+        _colorTween = _iconSR.DOColor(new Color(0.8f, .8f, .8f, 1f), hoverTweenTime);
+    }
+
+    public void HalfdimTile()
+    {
+        _colorTween.Kill();
+        _colorTween = _iconSR.DOColor(new Color (0.9f, .9f, .9f, 1f), hoverTweenTime);
+    }
+
+    public void BrightenTile()
+    {
+        _colorTween.Kill();
+        _iconSR.DOColor(Color.white, hoverTweenTime);
     }
 }
