@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class TileHandler : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class TileHandler : MonoBehaviour
     [SerializeField] List<SpriteRenderer> _srs = new List<SpriteRenderer>();
     [SerializeField] SpriteRenderer _iconSR = null;
     [SerializeField] SpriteRenderer _borderSR = null;
+    [SerializeField] TextMeshPro _herdTMP = null;
 
     //settings
 
@@ -23,6 +25,9 @@ public class TileHandler : MonoBehaviour
     Tween _slideTween;
     Collider2D _coll;
     public TileTypeData TileData { get; private set; }
+    int _herdSize = 1;
+    public int HerdSize => _herdSize;
+    public float HerdSizeBonus => 1+ ((_herdSize- 1) /10f);
 
     private void Awake()
     {
@@ -90,5 +95,11 @@ public class TileHandler : MonoBehaviour
         //rerender with new TileData
         _iconSR.sprite = tileType.TileIcon;
         _borderSR.color = tileType.TileColor;
+    }
+
+    public void IncrementHerdSize(int amountToAdd)
+    {
+        _herdSize += amountToAdd;
+        _herdTMP.text = string.Format("{0:F1}", $"{HerdSizeBonus}");
     }
 }

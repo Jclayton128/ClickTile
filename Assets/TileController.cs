@@ -115,6 +115,9 @@ public class TileController : MonoBehaviour
     {
         List<TileHandler> orthoTiles = GetOrthogonalTiles(clickedTile);
         List<TileHandler> consumableOrthoTiles = PruneNonconsumableOrthoTiles(clickedTile, orthoTiles);
+
+        GainPointsFromConsumedTiles(clickedTile, consumableOrthoTiles);
+
         RemoveConsumedTiles(clickedTile, consumableOrthoTiles);
         SlideTilesTowardsOriginTile(clickedTile, consumableOrthoTiles);
 
@@ -122,6 +125,8 @@ public class TileController : MonoBehaviour
 
         Invoke(nameof(RemapTileLocations), ClickTweenTime + 0.01f);
     }
+
+
 
     private List<TileHandler> GetOrthogonalTiles(TileHandler originTile)
     {
@@ -164,17 +169,57 @@ public class TileController : MonoBehaviour
     {
         List<TileHandler> consumableOrthoTiles = new List<TileHandler>();
 
-        foreach (var tile in orthoTiles)
+        if (clickedTile.TileData.TileType != TileHandler.TileTypes.Grass)
         {
-            //foreach ortho tile, compare it against the clicked Tile's TileType.
+            foreach (var tile in orthoTiles)
+            {
+                //foreach ortho tile, compare it against the clicked Tile's TileType.
 
+                if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
+                {
+                    consumableOrthoTiles.Add(tile);
+                }
+                else if (clickedTile.TileData.TileType == tile.TileData.TileType)
+                {
+                    consumableOrthoTiles.Add(tile);
+                }
+            }
+        }
+        
+
+        return consumableOrthoTiles;
+    }
+
+    private void GainPointsFromConsumedTiles(TileHandler clickedTile, List<TileHandler> consumableOrthoTiles)
+    {
+        int multiplier = 0;
+
+        foreach (var tile in consumableOrthoTiles)
+        {
             if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
             {
-                consumableOrthoTiles.Add(tile);
+                multiplier++;
             }
         }
 
-        return consumableOrthoTiles;
+        float pointGain = 0;
+        foreach (var tile in consumableOrthoTiles)
+        {
+            if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
+            {
+                pointGain += tile.HerdSizeBonus * multiplier;
+            }
+        }
+
+        Debug.Log($"Gained {pointGain} points");
+
+        foreach (var tile in consumableOrthoTiles)
+        {
+            if (clickedTile.TileData.TileType == tile.TileData.TileType)
+            {
+                clickedTile.IncrementHerdSize(tile.HerdSize);
+            }
+        }
     }
 
     private void RemoveConsumedTiles(TileHandler originTile, List<TileHandler> consumableOrthoTiles)
