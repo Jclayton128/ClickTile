@@ -6,7 +6,7 @@ using TMPro;
 
 public class TileHandler : MonoBehaviour
 {
-    public enum TileTypes { Undefined, Grass, Mouse, Wolf}
+    public enum TileTypes { Undefined, Veggies, Mouse, Wolf, Mud, Grass, Rock, Snow, Sand, Water, Lava}
 
     //refs
 
@@ -21,29 +21,38 @@ public class TileHandler : MonoBehaviour
     [SerializeField] float _scaleIncrease = 1.125f;
 
     //state
-    Tween _sizeTween;
+    
+    Tween _hoverTween;
     Tween _slideTween;
     Collider2D _coll;
     public TileTypeData TileData { get; private set; }
-    int _herdSize = 1;
-    public int HerdSize => _herdSize;
-    public float HerdSizeBonus => 1+ ((_herdSize- 1) /10f);
 
     private void Awake()
     {
         _coll = GetComponent<Collider2D>();
     }
 
+
     private void OnMouseEnter()
     {
-        _sizeTween.Kill();
-        _sizeTween = transform.DOScale(Vector2.one * _scaleIncrease, hoverTweenTime).SetEase(Ease.OutBack);
+        //_sizeTween.Kill();
+        //_sizeTween = transform.DOScale(Vector2.one * _scaleIncrease, hoverTweenTime).SetEase(Ease.OutBack);
+
+        if (_slideTween.IsActive()) return;
+
+        _hoverTween.Kill();
+        _hoverTween = _iconSR.transform.DOLocalMoveY(0.1f, hoverTweenTime).SetEase(Ease.OutBack);
     }
 
     private void OnMouseExit()
     {
-        _sizeTween.Kill();
-        _sizeTween = transform.DOScale(Vector2.one, hoverTweenTime).SetEase(Ease.OutBack);
+        //_sizeTween.Kill();
+        //_sizeTween = transform.DOScale(Vector2.one, hoverTweenTime).SetEase(Ease.OutBack);
+
+        //if (_slideTween.IsActive()) return;
+
+        _hoverTween.Kill();
+        _hoverTween = _iconSR.transform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
     }
 
     private void OnMouseUpAsButton()
@@ -64,27 +73,33 @@ public class TileHandler : MonoBehaviour
         Destroy(gameObject);    
     }
 
-    public void AbsorbTile(Vector2Int direction)
+    public void AbsorbTile(Vector2 direction)
     {
         TileController.Instance.DeregisterTile(this);
         _coll.enabled = false;
 
-        SlideTile(direction);
+        //SlideTile(direction);
 
-        _sizeTween.Kill();
-        _sizeTween = transform.DOScale(Vector2.zero, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+        _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
+        _iconSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime);
 
-        foreach (var sr in _srs)
-        {
-            sr.sortingOrder -= 10;
-        }
+
+        //_sizeTween.Kill();
+        //_sizeTween = transform.DOScale(Vector2.zero, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+
+        //foreach (var sr in _srs)
+        //{
+        //    sr.sortingOrder -= 10;
+        //}
 
     }
 
-    public void SlideTile(Vector2Int direction)
+    public void SlideTile(Vector2 slideVector)
     {
+        OnMouseExit();
+
         _slideTween.Kill();
-        _slideTween = transform.DOBlendableMoveBy(new Vector3(direction.x, direction.y, 0), TileController.Instance.ClickTweenTime);
+        _slideTween = transform.DOBlendableMoveBy(new Vector3(slideVector.x, slideVector.y, 0), TileController.Instance.ClickTweenTime).SetEase(Ease.OutBounce);
     }
 
     public void SetTile(TileTypeData tileType)
@@ -95,11 +110,12 @@ public class TileHandler : MonoBehaviour
         //rerender with new TileData
         _iconSR.sprite = tileType.TileIcon;
         _borderSR.color = tileType.TileColor;
+        _herdTMP.text = tileType.Monoletter;
     }
 
     public void IncrementHerdSize(int amountToAdd)
     {
-        _herdSize += amountToAdd;
-        _herdTMP.text = string.Format("{0:F1}", $"{HerdSizeBonus}");
+        //_herdSize += amountToAdd;
+        //_herdTMP.text = string.Format("{0:F1}", $"{HerdSizeBonus}");
     }
 }

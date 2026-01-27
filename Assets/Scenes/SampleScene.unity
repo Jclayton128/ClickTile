@@ -154,10 +154,13 @@ MonoBehaviour:
   _tileHolder: {fileID: 1909157898}
   _tilePrefab: {fileID: 5983876510145813891, guid: 20760c31a6f5fbd48908350944620c8f, type: 3}
   _tileTypesRaw:
-  - {fileID: 11400000, guid: 6f7b09f42acd5d744a29902db38faace, type: 2}
-  - {fileID: 11400000, guid: 34c215138a3f1e3489665c20cf4aabd1, type: 2}
-  - {fileID: 11400000, guid: 7e5d643c5c9024d4eac4b6b75e76f1bd, type: 2}
-  _arenaSize: 5
+  - {fileID: 11400000, guid: 61ea115c74a2bc94a921d615a8ee8473, type: 2}
+  - {fileID: 11400000, guid: aa5f7a82cb9088b47b58c77c6618b072, type: 2}
+  - {fileID: 11400000, guid: 7624b7a0591276e49bd8a279ed54b0b1, type: 2}
+  - {fileID: 11400000, guid: 1e1930c3c7c94d648aa478f0715de4f6, type: 2}
+  - {fileID: 11400000, guid: f181ca95b646e114e8196e1a3da84a06, type: 2}
+  - {fileID: 11400000, guid: 604bc519d4b3e084bab6a1b61daa481f, type: 2}
+  _arenaSize: 7
   _tilesRaw: []
 --- !u!4 &278156912
 Transform:
@@ -235,7 +238,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -260,7 +263,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 1.3, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

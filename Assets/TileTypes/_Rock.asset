@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96944d46f495ab04baa70f6d518ed5b5, type: 3}
-  m_Name: Grass
+  m_Name: _Rock
   m_EditorClassIdentifier: 
-  _tileType: 1
-  _color: {r: 0.03203987, g: 0.4528302, b: 0.10976546, a: 1}
-  _icon: {fileID: 21300000, guid: 7fe8652983338c742b3483933fae30be, type: 3}
+  _tileType: 6
+  _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
+  _icon: {fileID: 21300000, guid: 9260e8ff8ec13594c8a7a2a719ccee0c, type: 3}
   _prey: 
+  _monoletter: R

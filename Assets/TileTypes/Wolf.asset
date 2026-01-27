@@ -16,3 +16,4 @@ MonoBehaviour:
   _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
   _icon: {fileID: 21300000, guid: b1e8713cc7617d3428639a8af33129c2, type: 3}
   _prey: 02000000
+  _monoletter: W
