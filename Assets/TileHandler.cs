@@ -18,7 +18,7 @@ public class TileHandler : MonoBehaviour
     //settings
 
     [SerializeField] float hoverTweenTime = 0.125f;
-    [SerializeField] float _scaleIncrease = 1.125f;
+    [SerializeField] float _hoverYIncrease = 0.1f;
 
     //state
     
@@ -41,12 +41,9 @@ public class TileHandler : MonoBehaviour
 
         if (_slideTween.IsActive()) return;
 
-        _hoverTween.Kill();
-        _hoverTween = _iconSR.transform.DOLocalMoveY(0.1f, hoverTweenTime).SetEase(Ease.OutBack);
-
-        TileController.Instance.DimAllTiles();
-        TileController.Instance.HalfdimOrthogonalTiles(this);
-        BrightenTile();
+        TileController.Instance.UnraiseAllTiles();
+        //TileController.Instance.HalfraiseAllOrthogonalTiles(this);
+        FullraiseTile();
     }
 
     private void OnMouseExit()
@@ -56,10 +53,9 @@ public class TileHandler : MonoBehaviour
 
         //if (_slideTween.IsActive()) return;
 
-        _hoverTween.Kill();
-        _hoverTween = _iconSR.transform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
+        UnraiseTile();
 
-        DimTile();
+        //DimTile();
 
     }
 
@@ -137,5 +133,23 @@ public class TileHandler : MonoBehaviour
     {
         _colorTween.Kill();
         _iconSR.DOColor(Color.white, hoverTweenTime);
+    }
+
+    public void FullraiseTile()
+    {
+        _hoverTween.Kill();
+        _hoverTween = _iconSR.transform.DOLocalMoveY(_hoverYIncrease, hoverTweenTime).SetEase(Ease.OutBack);
+    }
+
+    public void HalfraiseTile()
+    {
+        _hoverTween.Kill();
+        _hoverTween = _iconSR.transform.DOLocalMoveY(_hoverYIncrease / 2f, hoverTweenTime).SetEase(Ease.OutBack);
+    }
+
+    public void UnraiseTile()
+    {
+        _hoverTween.Kill();
+        _hoverTween = _iconSR.transform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
     }
 }
