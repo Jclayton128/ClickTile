@@ -11,12 +11,13 @@ public class TileController : MonoBehaviour
     [SerializeField] Transform _tileHolder = null;
     [SerializeField] TileHandler _tilePrefab = null;
     [SerializeField] List<TileTypeData> _tileTypesRaw = null;
+    [SerializeField] GameObject _towerPrefab = null;
 
     //settings
     [SerializeField] int _arenaSize = 7;
     public float ClickTweenTime = 0.75f;
     float _yFactor = 0.7f;
-
+    Vector2Int _startingTower = new Vector2Int(3, 3);
 
     //state
     bool _isProcessingClick = false;
@@ -28,10 +29,12 @@ public class TileController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        ConstructArena();       
-
+        ConstructArena();
         RemapTileLocations();
+        AddTower();
     }
+
+
 
     private void ConstructArena()
     {
@@ -59,6 +62,13 @@ public class TileController : MonoBehaviour
 
         //    }
         //}
+    }
+    private void AddTower()
+    {
+        if (_tilesLocation.ContainsKey(_startingTower))
+        {
+            Instantiate(_towerPrefab, _tilesLocation[_startingTower].VisualsTransform);
+        }
     }
 
     private void CreateNewTile(Vector2 location)
@@ -135,13 +145,21 @@ public class TileController : MonoBehaviour
         _consumableOrthoTiles.Clear();
 
         _clickedTile = clickedTile;
-        _orthoTiles = GetOrthogonalTiles(_clickedTile);
-        _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
+
+        ActorController.Instance.MovePlayer(clickedTile);
         
+        _orthoTiles = GetOrthogonalTiles(_clickedTile);
+        Invoke(nameof(Delay_HandleTileClick), ActorController.Instance.MoveTweenTime);
+    }
+
+    private void Delay_HandleTileClick()
+    {
+        _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
+
         GainPowerFromConsumedTiles();
 
         RemoveConsumedTiles();
-        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.01f); //ClickTweenTime + 
+        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
 
         //VibrateNonconsumedOrthoTiles
 

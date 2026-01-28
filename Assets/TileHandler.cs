@@ -11,17 +11,17 @@ public class TileHandler : MonoBehaviour
     //refs
 
     [SerializeField] List<SpriteRenderer> _srs = new List<SpriteRenderer>();
-    [SerializeField] SpriteRenderer _iconSR = null;
+    [SerializeField] SpriteRenderer _tileSR = null;
+    [SerializeField] Transform _visualsTransform = null;
+    public Transform VisualsTransform => _visualsTransform;
     [SerializeField] SpriteRenderer _borderSR = null;
     [SerializeField] TextMeshPro _herdTMP = null;
 
     //settings
-
     [SerializeField] float hoverTweenTime = 0.125f;
     [SerializeField] float _hoverYIncrease = 0.1f;
 
     //state
-    
     Tween _hoverTween;
     Tween _slideTween;
     Tween _colorTween;
@@ -33,6 +33,19 @@ public class TileHandler : MonoBehaviour
         _coll = GetComponent<Collider2D>();
     }
 
+    public void SetTile(TileTypeData tileType)
+    {
+        TileData = tileType;
+
+        //take in a TileDate struct
+        //rerender with new TileData
+
+        _tileSR.sprite = tileType.TileIcon;
+        _borderSR.color = tileType.TileColor;
+        _herdTMP.text = tileType.Monoletter;
+    }
+
+    #region Mouse Handlers
 
     private void OnMouseEnter()
     {
@@ -70,6 +83,10 @@ public class TileHandler : MonoBehaviour
         TileController.Instance.HandleTileClick(this);
     }
 
+    #endregion
+
+    #region Tile Mechanics
+
     public void RemoveTile()
     {
         TileController.Instance.DeregisterTile(this);
@@ -84,8 +101,8 @@ public class TileHandler : MonoBehaviour
 
         //SlideTile(direction);
 
-        _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
-        _iconSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+        _tileSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
+        _tileSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
 
 
         //_sizeTween.Kill();
@@ -106,50 +123,45 @@ public class TileHandler : MonoBehaviour
         _slideTween = transform.DOBlendableMoveBy(new Vector3(slideVector.x, slideVector.y, 0), TileController.Instance.ClickTweenTime).SetEase(Ease.OutBounce);
     }
 
-    public void SetTile(TileTypeData tileType)
-    {
-        TileData = tileType;
-
-        //take in a TileDate struct
-        //rerender with new TileData
-        _iconSR.sprite = tileType.TileIcon;
-        _borderSR.color = tileType.TileColor;
-        _herdTMP.text = tileType.Monoletter;
-    }
+  
 
     public void DimTile()
     {
         _colorTween.Kill();
-        _colorTween = _iconSR.DOColor(new Color(0.8f, .8f, .8f, 1f), hoverTweenTime);
+        _colorTween = _tileSR.DOColor(new Color(0.8f, .8f, .8f, 1f), hoverTweenTime);
     }
 
     public void HalfdimTile()
     {
         _colorTween.Kill();
-        _colorTween = _iconSR.DOColor(new Color (0.9f, .9f, .9f, 1f), hoverTweenTime);
+        _colorTween = _tileSR.DOColor(new Color (0.9f, .9f, .9f, 1f), hoverTweenTime);
     }
 
     public void BrightenTile()
     {
         _colorTween.Kill();
-        _iconSR.DOColor(Color.white, hoverTweenTime);
+        _tileSR.DOColor(Color.white, hoverTweenTime);
     }
 
     public void FullraiseTile()
     {
         _hoverTween.Kill();
-        _hoverTween = _iconSR.transform.DOLocalMoveY(_hoverYIncrease, hoverTweenTime).SetEase(Ease.OutBack);
+        _hoverTween = _visualsTransform.transform.DOLocalMoveY(_hoverYIncrease, hoverTweenTime).SetEase(Ease.OutBack);
     }
 
     public void HalfraiseTile()
     {
         _hoverTween.Kill();
-        _hoverTween = _iconSR.transform.DOLocalMoveY(_hoverYIncrease / 2f, hoverTweenTime).SetEase(Ease.OutBack);
+        _hoverTween = _visualsTransform.transform.DOLocalMoveY(_hoverYIncrease / 2f, hoverTweenTime).SetEase(Ease.OutBack);
     }
 
     public void UnraiseTile()
     {
         _hoverTween.Kill();
-        _hoverTween = _iconSR.transform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
+        _hoverTween = _visualsTransform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
     }
+
+    #endregion
+
+
 }
