@@ -6,6 +6,8 @@ using UnityEngine;
 public class TileController : MonoBehaviour
 {
     public static TileController Instance { get; private set; }
+    public Action TileRemappingComplete;
+
 
     //ref
     [SerializeField] Transform _tileHolder = null;
@@ -116,16 +118,46 @@ public class TileController : MonoBehaviour
         {
             _tilesLocation.Add(GetVec2Int(tile), tile);
         }
+        TileRemappingComplete?.Invoke();
 
     }
 
-    private Vector2Int GetVec2Int(TileHandler tile)
+    public Vector2Int GetVec2Int(TileHandler tile)
     {
         Vector2Int origin = Vector2Int.zero;
         origin.x = Mathf.RoundToInt(tile.transform.position.x);
         origin.y = Mathf.RoundToInt(tile.transform.position.y / _yFactor);
         return origin;
 
+    }
+
+    public TileHandler GetTileAtVec2Int(Vector2Int vector2Int)
+    {
+        if (_tilesLocation.ContainsKey(vector2Int))
+        {
+            return _tilesLocation[vector2Int];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public TileHandler GetTileAtWorldPosition(Vector2 worldPosition)
+    {
+        Vector2Int origin = Vector2Int.zero;
+        origin.x = Mathf.RoundToInt(worldPosition.x);
+        origin.y = Mathf.RoundToInt(worldPosition.y / _yFactor);
+
+        if (_tilesLocation.ContainsKey(origin))
+        {
+            return _tilesLocation[origin];
+        }
+        else
+        {
+            Debug.Log($"No tiles found at {origin}");
+            return null;
+        }
     }
 
     #endregion

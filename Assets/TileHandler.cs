@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using System;
 
 public class TileHandler : MonoBehaviour
 {
     public enum TileTypes { Undefined, Veggies, Mouse, Wolf, Mud, Grass, Rock, Snow, Sand, Water, Lava}
 
-    //refs
+    public Action TileSliding;
 
+    //refs
     [SerializeField] List<SpriteRenderer> _srs = new List<SpriteRenderer>();
     [SerializeField] SpriteRenderer _tileSR = null;
     [SerializeField] Transform _visualsTransform = null;
@@ -27,6 +29,22 @@ public class TileHandler : MonoBehaviour
     Tween _colorTween;
     Collider2D _coll;
     public TileTypeData TileData { get; private set; }
+    //public ActorHandler _occupyingActor;
+    public ActorHandler OccupyingActor => CheckForOccupyingActor();
+
+    private ActorHandler CheckForOccupyingActor()
+    {
+        ActorHandler ah = GetComponentInChildren<ActorHandler>();
+        if (ah)
+        {
+            return ah;
+        }
+        else
+        {
+            return null;
+        }
+
+    }
 
     private void Awake()
     {
@@ -119,6 +137,8 @@ public class TileHandler : MonoBehaviour
     {
         OnMouseExit();
 
+        TileSliding?.Invoke();
+
         _slideTween.Kill();
         _slideTween = transform.DOBlendableMoveBy(new Vector3(slideVector.x, slideVector.y, 0), TileController.Instance.ClickTweenTime).SetEase(Ease.OutBounce);
     }
@@ -163,5 +183,24 @@ public class TileHandler : MonoBehaviour
 
     #endregion
 
+    #region Occupant Handlers
+
+    public void RegisterOccupant(ActorHandler newOccupant)
+    {
+        //if (_occupyingActor != null)
+        //{
+        //    Debug.Log($"This tile is already occupied by {_occupyingActor}");
+        //    return;
+        //}
+        
+        //_occupyingActor = newOccupant;
+    }
+
+    public void DeregisterOccupant()
+    {
+        //_occupyingActor = null;
+    }
+
+    #endregion
 
 }
