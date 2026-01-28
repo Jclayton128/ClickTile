@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 278156912}
   - component: {fileID: 278156911}
   - component: {fileID: 278156913}
+  - component: {fileID: 278156915}
+  - component: {fileID: 278156914}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -196,6 +198,31 @@ MonoBehaviour:
   _slimePrefab: {fileID: 1386633204982307006, guid: 0e546ef3eae28684b800e6c655950666, type: 3}
   _flyPrefab: {fileID: 8939693308450569683, guid: e650ee14ecb37ae49826426a35a4a788, type: 3}
   MoveTweenTime: 0.75
+  _actorTurnOrder: []
+--- !u!114 &278156914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278156910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d22d16dcdb2634ba955d60a97c3cd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &278156915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278156910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e410cd1abc786894597538b9a6734cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

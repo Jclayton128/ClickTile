@@ -7,7 +7,7 @@ using System;
 
 public class TileHandler : MonoBehaviour
 {
-    public enum TileTypes { Undefined, Veggies, Mouse, Wolf, Mud, Grass, Rock, Snow, Sand, Water, Lava}
+    public enum TileTypes { Undefined, Mud, Grass, Rock, Snow, Sand}
 
     public Action TileSliding;
 

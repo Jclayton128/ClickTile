@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ActorController : MonoBehaviour
@@ -12,28 +13,30 @@ public class ActorController : MonoBehaviour
     [SerializeField] ActorHandler _slimePrefab;
     [SerializeField] ActorHandler _flyPrefab;
     public float MoveTweenTime = 0.75f;
+    Vector2Int _playerStartingSpot = new Vector2Int(3, 2); //Just below the tower.
 
     //state
     ActorHandler _player;
     public ActorHandler Player => _player;
 
+    [SerializeField] List<ActorHandler> _actorTurnOrder = new List<ActorHandler>();
+    public ActorHandler PriorityActor => _actorTurnOrder[0];
 
     private void Awake()
     {
         Instance = this;
     }
 
+    public void SpawnPlayer()
+    {
+        _player = Instantiate(_wizardPrefab, TileController.Instance.GetTileAtVec2Int(_playerStartingSpot).VisualsTransform);
+        _player.HandleInitialTilePlacement(TileController.Instance.GetTileAtVec2Int(_playerStartingSpot));
+        AddActorToStartOfTurnOrder(_player);
+    }
+
     public void MovePlayer(TileHandler destinationTile)
     {
-        if (!_player)
-        {
-            _player = Instantiate(_wizardPrefab, destinationTile.VisualsTransform);
-            _player.HandleInitialTilePlacement(destinationTile);
-        }
-        else
-        {
-            _player.TeleportToNewTile(destinationTile, MoveTweenTime);
-        }
+        _player.TeleportToNewTile(destinationTile, MoveTweenTime);
     }
 
     [ContextMenu ("Spawn Fly")]
@@ -47,6 +50,36 @@ public class ActorController : MonoBehaviour
     public void SpawnSlime()
     {
         TileHandler tileToPlaceAt = TileController.Instance.GetTileAtVec2Int(new Vector2Int(1, 4));
-        Instantiate(_slimePrefab, tileToPlaceAt.VisualsTransform);
+        ActorHandler slime = Instantiate(_slimePrefab, tileToPlaceAt.VisualsTransform);
+
+        AddActorToEndOfTurnOrder(slime);
     }
+
+    #region Turn Mechanics
+
+    public void StartBattle()
+    {
+        _actorTurnOrder.Clear();
+    }
+
+    public void AddActorToStartOfTurnOrder(ActorHandler newActor)
+    {
+        _actorTurnOrder.Insert(0, newActor);
+    }
+
+    public void AddActorToEndOfTurnOrder(ActorHandler newActor)
+    {
+        _actorTurnOrder.Add(newActor);
+    }
+
+    public void HandlePriorityActorTurnCompletion()
+    {
+        ActorHandler completedActor = PriorityActor;
+        _actorTurnOrder.Remove(completedActor);
+        AddActorToEndOfTurnOrder(completedActor);
+
+        PriorityActor.BeginTurn();
+    }
+
+    #endregion
 }

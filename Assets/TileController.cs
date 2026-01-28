@@ -31,11 +31,15 @@ public class TileController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+    }
+
+    public void BuildNewArena()
+    {
         ConstructArena();
         RemapTileLocations();
         AddTower();
     }
-
 
 
     private void ConstructArena()
@@ -122,6 +126,11 @@ public class TileController : MonoBehaviour
 
     }
 
+
+
+    #endregion
+
+    #region Helpers
     public Vector2Int GetVec2Int(TileHandler tile)
     {
         Vector2Int origin = Vector2Int.zero;
@@ -159,48 +168,7 @@ public class TileController : MonoBehaviour
             return null;
         }
     }
-
-    #endregion
-
-    #region Gameplay
-    TileHandler _clickedTile;
-    List<TileHandler> _orthoTiles = new List<TileHandler>();
-    List<TileHandler> _consumableOrthoTiles = new List<TileHandler>();
-
-    public void HandleTileClick(TileHandler clickedTile)
-    {
-        if (_isProcessingClick) return;
-        _isProcessingClick = true;
-
-        _clickedTile = null;
-        _orthoTiles.Clear();
-        _consumableOrthoTiles.Clear();
-
-        _clickedTile = clickedTile;
-
-        ActorController.Instance.MovePlayer(clickedTile);
-        
-        _orthoTiles = GetOrthogonalTiles(_clickedTile);
-        Invoke(nameof(Delay_HandleTileClick), ActorController.Instance.MoveTweenTime);
-    }
-
-    private void Delay_HandleTileClick()
-    {
-        _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
-
-        GainPowerFromConsumedTiles();
-
-        RemoveConsumedTiles();
-        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
-
-        //VibrateNonconsumedOrthoTiles
-
-        float timeToComplete = ClickTweenTime + ClickTweenTime + 0.02f;
-        Invoke(nameof(RemapTileLocations), timeToComplete);
-        Invoke(nameof(HandleClickProcessingComplete), timeToComplete);
-    }
-
-    private List<TileHandler> GetOrthogonalTiles(TileHandler originTile)
+    public List<TileHandler> GetOrthogonalTiles(TileHandler originTile)
     {
         List<TileHandler> orthoTiles = new List<TileHandler>();
 
@@ -236,10 +204,69 @@ public class TileController : MonoBehaviour
         //Debug.Log($"clicked on {origin}, which has {orthoTiles.Count} neighbors");
         return orthoTiles;
     }
+    #endregion
+
+    #region Gameplay
+    TileHandler _clickedTile;
+    List<TileHandler> _orthoTiles = new List<TileHandler>();
+    List<TileHandler> _consumableOrthoTiles = new List<TileHandler>();
+
+    public void HandleTileClick(TileHandler clickedTile)
+    {
+        if (ActorController.Instance.PriorityActor != ActorController.Instance.Player) return;
+        if (_isProcessingClick) return;
+        _isProcessingClick = true;
+
+        _clickedTile = null;
+        _orthoTiles.Clear();
+        _consumableOrthoTiles.Clear();
+
+        _clickedTile = clickedTile;
+
+        ActorController.Instance.MovePlayer(clickedTile);
+        
+        _orthoTiles = GetOrthogonalTiles(_clickedTile);
+        Invoke(nameof(Delay_HandleTileClick), ActorController.Instance.MoveTweenTime);
+    }
+
+    private void Delay_HandleTileClick()
+    {
+        _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
+
+        GainPowerFromConsumedTiles();
+
+        RemoveConsumedTiles();
+        Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
+
+        //VibrateNonconsumedOrthoTiles
+
+        float timeToComplete = ClickTweenTime + ClickTweenTime + 0.02f;
+        Invoke(nameof(Delay2_HandleTileClick), timeToComplete);
+    }
+
+    private void Delay2_HandleTileClick()
+    {
+        RemapTileLocations();
+        HandleClickProcessingComplete();
+        ActorController.Instance.HandlePriorityActorTurnCompletion();
+    }
+
+
 
     private List<TileHandler> PruneNonconsumableOrthoTiles()
     {
-        List<TileHandler> consumableOrthoTiles = new List<TileHandler>(_orthoTiles); //shim to allow all ortho tiles as consumable
+        // List<TileHandler> consumableOrthoTiles = new List<TileHandler>(_orthoTiles); //shim to allow all ortho tiles as consumable
+
+        List<TileHandler> consumableOrthoTiles = new List<TileHandler>();
+
+        foreach (var tile in _orthoTiles)
+        {
+            if (tile.OccupyingActor != null) continue;
+            else
+            {
+                consumableOrthoTiles.Add(tile);
+            }
+        }
 
         //if (clickedTile.TileData.TileType != TileHandler.TileTypes.Veggies)
         //{
@@ -264,34 +291,41 @@ public class TileController : MonoBehaviour
 
     private void GainPowerFromConsumedTiles()
     {
-        //int multiplier = 0;
+        int count_grass = 0;
+        int count_rock = 0;
+        int count_snow = 0;
+        int count_sand = 0;
 
-        //foreach (var tile in consumableOrthoTiles)
-        //{
-        //    if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
-        //    {
-        //        multiplier++;
-        //    }
-        //}
+        foreach (var tile in _consumableOrthoTiles)
+        {
+            if (tile.TileData.TileType == TileHandler.TileTypes.Grass)
+            {
+                Debug.Log("more grass");
+                count_grass++;
+            }
 
-        //float pointGain = 0;
-        //foreach (var tile in consumableOrthoTiles)
-        //{
-        //    if (clickedTile.TileData.Prey.Contains(tile.TileData.TileType))
-        //    {
-        //        pointGain += tile.HerdSizeBonus * multiplier;
-        //    }
-        //}
+            else if (tile.TileData.TileType == TileHandler.TileTypes.Rock)
+            {
+                Debug.Log("more rock");
+                count_rock++;
+            }
 
-        //Debug.Log($"Gained {pointGain} points");
+            else if(tile.TileData.TileType == TileHandler.TileTypes.Snow)
+            {
+                Debug.Log("more snow");
+                count_snow++;
+            }
 
-        //foreach (var tile in consumableOrthoTiles)
-        //{
-        //    if (clickedTile.TileData.TileType == tile.TileData.TileType)
-        //    {
-        //        clickedTile.IncrementHerdSize(tile.HerdSize);
-        //    }
-        //}
+            else if(tile.TileData.TileType == TileHandler.TileTypes.Sand)
+            {
+                Debug.Log("more sand");
+                count_sand++;
+            }
+        }
+
+        string basic = $"Consumed {_consumableOrthoTiles.Count} and gained {count_grass} Grass, {count_rock} Rock, {count_sand} Sand, and {count_snow} Snow.";
+        Debug.Log(basic);
+
     }
 
     private void RemoveConsumedTiles()

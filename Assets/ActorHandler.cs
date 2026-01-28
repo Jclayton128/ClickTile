@@ -7,6 +7,7 @@ using System;
 public class ActorHandler : MonoBehaviour
 {
     //ref
+    [SerializeField] bool _isPlayer = false;
     [SerializeField] bool _isAnchoredToTile = true;
     [SerializeField] bool _immobilizesTile = false;
     [SerializeField] SpriteRenderer _visualSR = null;
@@ -16,7 +17,7 @@ public class ActorHandler : MonoBehaviour
     TileHandler _newTile;
     float _remainingTweenTime;
     public bool ImmobilizesTile => _immobilizesTile;
-    TileHandler _currentTile;
+    public TileHandler CurrentTile => transform.parent.parent.GetComponent<TileHandler>();
 
     private void Start()
     {
@@ -25,7 +26,7 @@ public class ActorHandler : MonoBehaviour
 
     private void HandleTileRemappingComplete()
     {
-        if (_currentTile) return;
+        if (CurrentTile) return;
 
         _newTile = TileController.Instance.GetTileAtWorldPosition(transform.position);
         
@@ -43,11 +44,10 @@ public class ActorHandler : MonoBehaviour
 
     private void RegisterAtNewTile()
     {
-        if (_currentTile)
+        if (CurrentTile)
         {
-            _currentTile.TileSliding -= HandleTileSliding;
+            CurrentTile.TileSliding -= HandleTileSliding;
             //_currentTile.DeregisterOccupant();
-            _currentTile = null;
         }
 
         //newTile.RegisterOccupant(this);
@@ -115,4 +115,27 @@ public class ActorHandler : MonoBehaviour
             RegisterAtNewTile();
         }
     }
+
+    #region AI
+    public void BeginTurn()
+    {
+        if (_isPlayer) return;
+        Debug.Log("Monster does his movement...");
+
+        List<TileHandler> orthoTiles = TileController.Instance.GetOrthogonalTiles(CurrentTile);
+
+        _fadeTween.Kill();
+        _visualSR.color = new Color(_visualSR.color.r, _visualSR.color.g, _visualSR.color.b, 1);
+        _fadeTween = _visualSR.DOFade(0, 0.5f);
+        _fadeTween = _visualSR.DOFade(1, 0.5f).SetDelay(0.5f);
+
+        Invoke(nameof(CompleteTurn), 1f);
+    }
+
+    private void CompleteTurn()
+    {
+        ActorController.Instance.HandlePriorityActorTurnCompletion();
+    }
+
+    #endregion
 }
