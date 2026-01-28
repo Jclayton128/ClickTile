@@ -28,7 +28,12 @@ public class ActorHandler : MonoBehaviour
         if (_currentTile) return;
 
         _newTile = TileController.Instance.GetTileAtWorldPosition(transform.position);
-        RegisterAtNewTile();
+        
+        if (!_isAnchoredToTile)
+        {
+            RegisterAtNewTile();
+        }
+
     }
 
     public void HandleInitialTilePlacement(TileHandler initialTile)
