@@ -162,7 +162,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7624b7a0591276e49bd8a279ed54b0b1, type: 2}
   - {fileID: 11400000, guid: 1e1930c3c7c94d648aa478f0715de4f6, type: 2}
   - {fileID: 11400000, guid: f181ca95b646e114e8196e1a3da84a06, type: 2}
-  - {fileID: 11400000, guid: 604bc519d4b3e084bab6a1b61daa481f, type: 2}
   _towerPrefab: {fileID: 5422821298189269905, guid: b4e4a75a45cfb1a4e9716b18aa54422f, type: 3}
   _arenaSize: 7
   ClickTweenTime: 0.75
