@@ -26,7 +26,8 @@ public class TileController : MonoBehaviour
     bool _isProcessingClick = false;
     [SerializeField] List<TileHandler> _tilesRaw = new List<TileHandler>();
     Dictionary<Vector2Int, TileHandler> _tilesLocation = new Dictionary<Vector2Int, TileHandler>();
-    
+    Queue<TileTypeData> _tilesToRegenerate = new Queue<TileTypeData>();
+
     #region Arena Setup
 
     private void Awake()
@@ -95,8 +96,16 @@ public class TileController : MonoBehaviour
         newTile.transform.position = location;
         newTile.SlideTile(slideVector);
 
-        int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
-        newTile.SetTile(_tileTypesRaw[rand]);
+        if (_tilesToRegenerate.Count > 0)
+        {
+            newTile.SetTile(_tilesToRegenerate.Dequeue());
+        }
+        else
+        {
+            int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
+            newTile.SetTile(_tileTypesRaw[rand]);
+        }
+
 
         _tilesRaw.Add(newTile);
 
@@ -348,11 +357,14 @@ public class TileController : MonoBehaviour
     {
         Vector2Int origin = GetVec2Int(_clickedTile);
 
+        List<TileTypeData> consumedTileTypes = new List<TileTypeData>();    
+
         Vector2Int walker = origin;
         Dictionary<Vector2Int, TileHandler> consumableTileLocations = new Dictionary<Vector2Int, TileHandler>();
         foreach (var tile in _consumableOrthoTiles)
         {
             consumableTileLocations.Add(GetVec2Int(tile), tile);
+            _tilesToRegenerate.Enqueue(tile.TileData);
         }
 
         walker.x -= 1;
@@ -384,6 +396,8 @@ public class TileController : MonoBehaviour
         {
             consumableTileLocations[walker].AbsorbTile(slideDirection);
         }
+
+
     }
 
 
