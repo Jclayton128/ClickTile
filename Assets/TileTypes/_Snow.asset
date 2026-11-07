@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: _Snow
   m_EditorClassIdentifier: 
   _tileType: 4
-  _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
-  _icon: {fileID: 21300000, guid: 4af0b20734e249140aa805350466c4e0, type: 3}
-  _prey: 
-  _monoletter: S
+  _tileSprite: {fileID: 21300000, guid: 4af0b20734e249140aa805350466c4e0, type: 3}
+  _tileIcon: {fileID: 21300000, guid: 2ad3a649089ce7a48915fd87d301305f, type: 3}

@@ -7,17 +7,16 @@ using System;
 
 public class TileHandler : MonoBehaviour
 {
-    public enum TileTypes { Undefined, Mud, Grass, Rock, Snow, Sand}
+    public enum TileTypes { Undefined, DirtFire, GrassEarth, RockDeath, SnowAir, SandAir}
 
     public Action TileSliding;
 
     //refs
     [SerializeField] List<SpriteRenderer> _srs = new List<SpriteRenderer>();
     [SerializeField] SpriteRenderer _tileSR = null;
+    [SerializeField] SpriteRenderer _iconSR = null;
     [SerializeField] Transform _visualsTransform = null;
     public Transform VisualsTransform => _visualsTransform;
-    [SerializeField] SpriteRenderer _borderSR = null;
-    [SerializeField] TextMeshPro _herdTMP = null;
 
     //settings
     [SerializeField] float hoverTweenTime = 0.125f;
@@ -58,9 +57,8 @@ public class TileHandler : MonoBehaviour
         //take in a TileDate struct
         //rerender with new TileData
 
-        _tileSR.sprite = tileType.TileIcon;
-        _borderSR.color = tileType.TileColor;
-        _herdTMP.text = tileType.Monoletter;
+        _tileSR.sprite = tileType.TileSprite;
+        _iconSR.sprite = tileType.TileIcon;
     }
 
     #region Mouse Handlers
@@ -120,7 +118,8 @@ public class TileHandler : MonoBehaviour
         //SlideTile(direction);
 
         _tileSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
-        _tileSR.transform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+        _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
+        _visualsTransform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
 
 
         //_sizeTween.Kill();

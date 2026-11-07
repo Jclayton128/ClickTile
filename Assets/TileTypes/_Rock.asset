@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: _Rock
   m_EditorClassIdentifier: 
   _tileType: 3
-  _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
-  _icon: {fileID: 21300000, guid: 9260e8ff8ec13594c8a7a2a719ccee0c, type: 3}
-  _prey: 
-  _monoletter: R
+  _tileSprite: {fileID: 21300000, guid: 9260e8ff8ec13594c8a7a2a719ccee0c, type: 3}
+  _tileIcon: {fileID: 21300000, guid: 84f51933c9871354db59bd32e8548ec6, type: 3}

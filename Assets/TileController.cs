@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using UnityEngine;
 
 public class TileController : MonoBehaviour
@@ -131,6 +132,22 @@ public class TileController : MonoBehaviour
     #endregion
 
     #region Helpers
+
+    public Sprite GetManaSprite(TileHandler.TileTypes manaType)
+    {
+        foreach (var tileType in _tileTypesRaw)
+        {
+            if (tileType.TileType == manaType)
+            {
+                return tileType.TileIcon;
+            }
+        }
+
+        Debug.Log("mana type not found");
+        return null;
+
+    }
+
     public Vector2Int GetVec2Int(TileHandler tile)
     {
         Vector2Int origin = Vector2Int.zero;
@@ -233,7 +250,7 @@ public class TileController : MonoBehaviour
     {
         _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
 
-        GainPowerFromConsumedTiles();
+        CollectManaFromTiles();
 
         RemoveConsumedTiles();
         Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
@@ -289,42 +306,40 @@ public class TileController : MonoBehaviour
         return consumableOrthoTiles;
     }
 
-    private void GainPowerFromConsumedTiles()
+    private void CollectManaFromTiles()
     {
-        int count_grass = 0;
-        int count_rock = 0;
-        int count_snow = 0;
-        int count_sand = 0;
+        MagicController.Instance.ClearAllMana();
 
         foreach (var tile in _consumableOrthoTiles)
         {
-            if (tile.TileData.TileType == TileHandler.TileTypes.Grass)
+            if (tile.TileData.TileType == TileHandler.TileTypes.DirtFire)
             {
-                Debug.Log("more grass");
-                count_grass++;
+                MagicController.Instance.GainMana(TileHandler.TileTypes.DirtFire);
             }
 
-            else if (tile.TileData.TileType == TileHandler.TileTypes.Rock)
+            if (tile.TileData.TileType == TileHandler.TileTypes.GrassEarth)
             {
-                Debug.Log("more rock");
-                count_rock++;
+                MagicController.Instance.GainMana(TileHandler.TileTypes.GrassEarth);
             }
 
-            else if(tile.TileData.TileType == TileHandler.TileTypes.Snow)
+            else if (tile.TileData.TileType == TileHandler.TileTypes.RockDeath)
             {
-                Debug.Log("more snow");
-                count_snow++;
+                MagicController.Instance.GainMana(TileHandler.TileTypes.RockDeath);
             }
 
-            else if(tile.TileData.TileType == TileHandler.TileTypes.Sand)
+            else if(tile.TileData.TileType == TileHandler.TileTypes.SnowAir)
             {
-                Debug.Log("more sand");
-                count_sand++;
+                MagicController.Instance.GainMana(TileHandler.TileTypes.SnowAir);
+            }
+
+            else if(tile.TileData.TileType == TileHandler.TileTypes.SandAir)
+            {
+                MagicController.Instance.GainMana(TileHandler.TileTypes.SandAir);
             }
         }
 
-        string basic = $"Consumed {_consumableOrthoTiles.Count} and gained {count_grass} Grass, {count_rock} Rock, {count_sand} Sand, and {count_snow} Snow.";
-        Debug.Log(basic);
+        //string basic = $"Consumed {_consumableOrthoTiles.Count} and gained {count_grass} Grass, {count_rock} Rock, {count_sand} Sand, and {count_snow} Snow.";
+        //Debug.Log(basic);
 
     }
 

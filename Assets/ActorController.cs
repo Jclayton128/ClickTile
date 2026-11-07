@@ -32,6 +32,8 @@ public class ActorController : MonoBehaviour
         _player = Instantiate(_wizardPrefab, TileController.Instance.GetTileAtVec2Int(_playerStartingSpot).VisualsTransform);
         _player.HandleInitialTilePlacement(TileController.Instance.GetTileAtVec2Int(_playerStartingSpot));
         AddActorToStartOfTurnOrder(_player);
+
+        MagicController.Instance.ClearAllMana();
     }
 
     public void MovePlayer(TileHandler destinationTile)

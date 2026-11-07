@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: _Grass
   m_EditorClassIdentifier: 
   _tileType: 2
-  _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
-  _icon: {fileID: 21300000, guid: 570b02b50ec83db498e0231e2fb881f2, type: 3}
-  _prey: 
-  _monoletter: G
+  _tileSprite: {fileID: 21300000, guid: 570b02b50ec83db498e0231e2fb881f2, type: 3}
+  _tileIcon: {fileID: 21300000, guid: 3ad65128c279ac4468ade08927b195e8, type: 3}

@@ -8,14 +8,11 @@ public class TileTypeData : ScriptableObject
 
     [SerializeField] TileHandler.TileTypes _tileType = TileHandler.TileTypes.Undefined;
 
-    [SerializeField] Color _color = Color.white;
-    [SerializeField] Sprite _icon = null;
-    [SerializeField] List<TileHandler.TileTypes> _prey = null;
-    [SerializeField] string _monoletter = "D";
+    [SerializeField] Sprite _tileSprite = null;
+    [SerializeField] Sprite _tileIcon = null;
 
     public TileHandler.TileTypes TileType => _tileType;
-    public Color TileColor => _color;
-    public Sprite TileIcon => _icon;
-    public List<TileHandler.TileTypes> Prey => _prey;
-    public string Monoletter => _monoletter;
+    public Sprite TileSprite => _tileSprite;
+    public Sprite TileIcon => _tileIcon;
+
 }
