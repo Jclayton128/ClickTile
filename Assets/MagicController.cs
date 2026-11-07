@@ -38,7 +38,7 @@ public class MagicController : MonoBehaviour
 
     public void GainMana(TileHandler.TileTypes manaType)
     {
-        if (_manaSupply.Count > 4)
+        if (_manaSupply.Count >= _manaSlots.Count)
         {
             Debug.Log("Too much mana collected");
             return;
@@ -69,10 +69,12 @@ public class MagicController : MonoBehaviour
 
     public void ClearAllMana()
     {
-        for (int i = 0; i < _manaSupply.Count; i++)
-        {
-            _manaSupply[i] = TileHandler.TileTypes.Undefined;
-        }
+        //for (int i = 0; i < _manaSupply.Count; i++)
+        //{
+        //    _manaSupply[i] = TileHandler.TileTypes.Undefined;
+        //}
+
+        _manaSupply.Clear();
         RenderManaCollected();
     }
 
@@ -87,6 +89,7 @@ public class MagicController : MonoBehaviour
             }
             else
             {
+                
                 _manaSlots[i].enabled = true;
                 _manaSlots[i].sprite = TileController.Instance.GetManaSprite(_manaSupply[i]);
             }
