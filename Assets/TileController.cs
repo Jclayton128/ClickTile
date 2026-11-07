@@ -251,6 +251,7 @@ public class TileController : MonoBehaviour
         _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
 
         CollectManaFromTiles();
+        MagicController.Instance.DetermineCastableSpells();
 
         RemoveConsumedTiles();
         Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 

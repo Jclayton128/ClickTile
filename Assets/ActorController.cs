@@ -34,6 +34,7 @@ public class ActorController : MonoBehaviour
         AddActorToStartOfTurnOrder(_player);
 
         MagicController.Instance.ClearAllMana();
+        MagicController.Instance.LoadStartingSpells();
     }
 
     public void MovePlayer(TileHandler destinationTile)
