@@ -15,11 +15,7 @@ public class MagicController : MonoBehaviour
     [SerializeField] List<SpellSO> _startingSpells = null;
 
     //state
-    [SerializeField] List<TileHandler.TileTypes> _manaSupply = new List<TileHandler.TileTypes>(4)
-        {TileHandler.TileTypes.Undefined,
-        TileHandler.TileTypes.Undefined,
-        TileHandler.TileTypes.Undefined,
-        TileHandler.TileTypes.Undefined};
+    [SerializeField] List<TileHandler.TileTypes> _manaSupply = new List<TileHandler.TileTypes>();
 
     private void Awake()
     {
@@ -42,28 +38,31 @@ public class MagicController : MonoBehaviour
 
     public void GainMana(TileHandler.TileTypes manaType)
     {
-        for (int i = 0; i < _manaSupply.Count; i++)
+        if (_manaSupply.Count > 4)
         {
-            if (_manaSupply[i] == TileHandler.TileTypes.Undefined)
-            {
-                _manaSupply[i] = manaType;
-                break;
-            }
+            Debug.Log("Too much mana collected");
+            return;
         }
+
+        _manaSupply.Add(manaType);
 
         RenderManaCollected();
     }
 
     public void SpendMana(TileHandler.TileTypes manaType)
     {
-        for (int i = 0; i < _manaSupply.Count; i++)
+        if (_manaSupply.Contains(manaType))
         {
-            if (_manaSupply[i] == manaType)
-            {
-                _manaSupply[i] = TileHandler.TileTypes.Undefined;
-                break;
-            }
+            _manaSupply.Remove(manaType);
         }
+        //for (int i = 0; i < _manaSupply.Count; i++)
+        //{
+        //    if (_manaSupply[i] == manaType)
+        //    {
+        //        _manaSupply[i] = TileHandler.TileTypes.Undefined;
+        //        break;
+        //    }
+        //}
 
         RenderManaCollected();
     }
@@ -79,14 +78,16 @@ public class MagicController : MonoBehaviour
 
     private void RenderManaCollected()
     {
-        for (int i = 0; i < _manaSupply.Count; i++)
+        for (int i = 0; i < _manaSlots.Count; i++)
         {
-            if (_manaSupply[i] == TileHandler.TileTypes.Undefined)
+            if (i >= _manaSupply.Count)
             {
+                _manaSlots[i].enabled = false;
                 _manaSlots[i].sprite = _nullManaIcon;
             }
             else
             {
+                _manaSlots[i].enabled = true;
                 _manaSlots[i].sprite = TileController.Instance.GetManaSprite(_manaSupply[i]);
             }
         }
