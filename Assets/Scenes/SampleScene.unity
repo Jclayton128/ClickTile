@@ -368,7 +368,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9117e761a25b52b45af1adc56ef3d7d8, type: 2}
   - {fileID: 11400000, guid: 2d45a22be666bdd44b2a3c8bce887f2d, type: 2}
   - {fileID: 11400000, guid: cc18a6c39ce14f94a887d55af51bba46, type: 2}
-  _manaCollected: 00000000000000000000000000000000
+  _manaSupply: 00000000000000000000000000000000
 --- !u!1001 &370654300
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1072,8 +1072,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2028513128}
   - {fileID: 168723444}
+  - {fileID: 2028513128}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1851,10 +1851,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2028513128}
     m_Modifications:
-    - target: {fileID: 2170953604634111033, guid: 38d876f6542dc1f49884969c2876a673, type: 3}
-      propertyPath: _yPos_PartialLower
-      value: -100
-      objectReference: {fileID: 0}
     - target: {fileID: 5980372983064683500, guid: 38d876f6542dc1f49884969c2876a673, type: 3}
       propertyPath: m_Name
       value: SpellSlotPanel_0

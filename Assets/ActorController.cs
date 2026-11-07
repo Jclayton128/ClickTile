@@ -35,6 +35,7 @@ public class ActorController : MonoBehaviour
 
         MagicController.Instance.ClearAllMana();
         MagicController.Instance.LoadStartingSpells();
+        MagicController.Instance.DetermineCastableSpells();
     }
 
     public void MovePlayer(TileHandler destinationTile)

@@ -1,17 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spell SO")]
 public class SpellSO : ScriptableObject
 {
+    public enum TargetingTypes { Aura, Orthogonal, Diagonal, TerrainFirstMana, Random}
+    public enum EffectTypes { Damage, Shield, Heal, Poison, Stun, Ignite}
+    
     //settings
     [SerializeField] string _spellName = "Default Spell";
     [SerializeField] List<TileHandler.TileTypes> _manaCost = new List<TileHandler.TileTypes>();
 
+    [SerializeField] TargetingTypes _targetingType = TargetingTypes.Aura;
+    [SerializeField] List<EffectTypes> _effects = null;
+    [SerializeField] int _range = 1;
+    [SerializeField] int _impact = 1;
+
     //state
     public string SpellName => _spellName;
     public List<TileHandler.TileTypes> ManaCost => _manaCost;
+    public TargetingTypes TargetingType => _targetingType;
+    public int Range => _range;
+    public List<EffectTypes> Effects => _effects;
+
 
     public bool CheckIfCastable(List<TileHandler.TileTypes> availableMana)
     {
@@ -44,6 +57,16 @@ public class SpellSO : ScriptableObject
         else
         {
             return true;
+        }
+    }
+
+    public void Cast()
+    {
+        Debug.Log($"Casting " + SpellName);
+
+        foreach (var mana in _manaCost)
+        {
+            MagicController.Instance.SpendMana(mana);
         }
     }
 }

@@ -61,6 +61,7 @@ public class MagicController : MonoBehaviour
             if (_manaSupply[i] == manaType)
             {
                 _manaSupply[i] = TileHandler.TileTypes.Undefined;
+                break;
             }
         }
 
@@ -97,17 +98,20 @@ public class MagicController : MonoBehaviour
         {
             if (spellSlot.LoadedSpell == null)
             {
-                spellSlot.LowerSpellSlot_Fully();
+                spellSlot.IsCastable = false;
+                spellSlot.PositionSlot_Unfilled();
             }
             else
             {
                 if (spellSlot.LoadedSpell.CheckIfCastable(_manaSupply))
                 {
-                    spellSlot.RaiseSpellSlot();
+                    spellSlot.IsCastable = true;
+                    spellSlot.PositionSlot_FilledAndCastable();
                 }
                 else
                 {
-                    spellSlot.LowerSpellSlot_Partially();
+                    spellSlot.IsCastable = false;
+                    spellSlot.PositionSlot_FilledButUncastable();
                 }
 
             }
