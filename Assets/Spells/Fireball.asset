@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spellName: Fireball
   _manaCost: 0100000005000000
+  _targetingType: 0
+  _effects: 00000000
+  _depiction: 0
+  _projectilePrefab: {fileID: 0}
+  _range: 1
+  _magnitude: 1

@@ -8,9 +8,11 @@ public class ActorHandler : MonoBehaviour
 {
     //ref
     [SerializeField] bool _isPlayer = false;
+    [SerializeField] bool _canBeTargetedByPlayerSpell = false;
     [SerializeField] bool _isAnchoredToTile = true;
     [SerializeField] bool _immobilizesTile = false;
     [SerializeField] SpriteRenderer _visualSR = null;
+
 
     //state
     Tween _fadeTween;
@@ -18,6 +20,7 @@ public class ActorHandler : MonoBehaviour
     float _remainingTweenTime;
     public bool ImmobilizesTile => _immobilizesTile;
     public TileHandler CurrentTile => transform.parent.parent.GetComponent<TileHandler>();
+    public bool CanBeTargetedByPlayerSpell => _canBeTargetedByPlayerSpell;  
 
     private void Start()
     {
@@ -74,6 +77,20 @@ public class ActorHandler : MonoBehaviour
         newTile.TileSliding += HandleTileSliding;
         transform.parent = newTile.VisualsTransform;
         transform.localPosition = Vector3.zero;
+    }
+
+    public void DestroySelf()
+    {
+        if (CurrentTile)
+        {
+            CurrentTile.TileSliding -= HandleTileSliding;
+            //_currentTile.DeregisterOccupant();
+        }
+        TileController.Instance.TileRemappingComplete -= HandleTileRemappingComplete;
+        transform.parent = null;
+        ActorController.Instance.RemoveActorFromTurnOrder(this);
+
+        Destroy(gameObject);
     }
 
     public void FadeInOut(float fadeInOutTime)

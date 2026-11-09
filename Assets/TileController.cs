@@ -337,9 +337,9 @@ public class TileController : MonoBehaviour
                 MagicController.Instance.GainMana(TileHandler.TileTypes.RockDeath);
             }
 
-            else if(tile.TileData.TileType == TileHandler.TileTypes.SnowAir)
+            else if(tile.TileData.TileType == TileHandler.TileTypes.SnowWater)
             {
-                MagicController.Instance.GainMana(TileHandler.TileTypes.SnowAir);
+                MagicController.Instance.GainMana(TileHandler.TileTypes.SnowWater);
             }
 
             else if(tile.TileData.TileType == TileHandler.TileTypes.SandAir)

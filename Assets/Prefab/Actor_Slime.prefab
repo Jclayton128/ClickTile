@@ -48,9 +48,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3625485637360447312, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
+      propertyPath: _canBeTargetedByPlayerSpell
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4473781422476474718, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
       propertyPath: m_Name
-      value: Actor_Blob
+      value: Actor_Slime
       objectReference: {fileID: 0}
     - target: {fileID: 6902931693642903050, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
       propertyPath: m_Size.x

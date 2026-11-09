@@ -85,5 +85,12 @@ public class ActorController : MonoBehaviour
         PriorityActor.BeginTurn();
     }
 
+    public void RemoveActorFromTurnOrder(ActorHandler removedActor)
+    {
+        _actorTurnOrder.Remove(removedActor);
+    }
+
     #endregion
+
+
 }

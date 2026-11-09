@@ -7,7 +7,7 @@ using System;
 
 public class TileHandler : MonoBehaviour
 {
-    public enum TileTypes { Undefined, DirtFire, GrassEarth, RockDeath, SnowAir, SandAir}
+    public enum TileTypes { Undefined, DirtFire, GrassEarth, RockDeath, SnowWater, SandAir}
 
     public Action TileSliding;
 
@@ -36,6 +36,7 @@ public class TileHandler : MonoBehaviour
         ActorHandler ah = GetComponentInChildren<ActorHandler>();
         if (ah)
         {
+
             return ah;
         }
         else

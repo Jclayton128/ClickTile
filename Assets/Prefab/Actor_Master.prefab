@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1131642600830481445}
   - component: {fileID: 3625485637360447312}
+  - component: {fileID: 7076495007213261331}
   m_Layer: 0
   m_Name: Actor_Master
   m_TagString: Untagged
@@ -129,6 +130,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9de70df9010bf8843bf7948be1254c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPlayer: 0
+  _canBeTargetedByPlayerSpell: 0
   _isAnchoredToTile: 1
   _immobilizesTile: 0
   _visualSR: {fileID: 6902931693642903050}
+--- !u!114 &7076495007213261331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473781422476474718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77440149fe509c44bbc68b83d51fe63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
