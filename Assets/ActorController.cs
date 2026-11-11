@@ -46,7 +46,7 @@ public class ActorController : MonoBehaviour
 
         ActorHandler army = Instantiate(_armyPrefab, randomOpenTile.VisualsTransform);
         army.SetPower(3);
-        //AddActorToEndOfTurnOrder(army);
+        AddActorToEndOfTurnOrder(army);
     }
 
     public void MovePlayer(TileHandler destinationTile)
@@ -69,7 +69,7 @@ public class ActorController : MonoBehaviour
         TileHandler randomOpenTile = TileController.Instance.FindRandomUnoccupiedTile();
         ActorHandler slime = Instantiate(_slimePrefab, randomOpenTile.VisualsTransform);
         slime.SetPower(2);
-        //AddActorToEndOfTurnOrder(slime);
+        AddActorToEndOfTurnOrder(slime);
     }
 
     #region Turn Mechanics

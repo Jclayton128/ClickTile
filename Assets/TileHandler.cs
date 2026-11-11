@@ -97,7 +97,9 @@ public class TileHandler : MonoBehaviour
 
     private void HandleClick()
     {
-        //
+        //cannot click on a tile with an actor already in it.
+        if (OccupyingActor) return;
+
         TileController.Instance.HandleTileClick(this);
     }
 

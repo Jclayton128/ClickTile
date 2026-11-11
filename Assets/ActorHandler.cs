@@ -8,8 +8,9 @@ using TMPro;
 public class ActorHandler : MonoBehaviour
 {
     //ref
+    [SerializeField] bool _isPlayer = false;
     [SerializeField] bool _isFriendly = false;
-    [SerializeField] bool _canBeTargetedByPlayerSpell = false;
+    //[SerializeField] bool _canBeTargetedByPlayerSpell = false;
     [SerializeField] bool _isAnchoredToTile = true;
     [SerializeField] bool _immobilizesTile = false;
     [SerializeField] SpriteRenderer _visualSR = null;
@@ -23,7 +24,7 @@ public class ActorHandler : MonoBehaviour
     float _remainingTweenTime;
     public bool ImmobilizesTile => _immobilizesTile;
     public TileHandler CurrentTile => transform.parent.parent.GetComponent<TileHandler>();
-    public bool CanBeTargetedByPlayerSpell => _canBeTargetedByPlayerSpell;
+    //public bool CanBeTargetedByPlayerSpell => _canBeTargetedByPlayerSpell;
     [SerializeField] int _power = 1;
     public int Power => _power;
     public bool IsFriendly => _isFriendly;
@@ -37,7 +38,6 @@ public class ActorHandler : MonoBehaviour
     #region Tile connections
     private void HandleTileRemappingComplete()
     {
-        Debug.Log(gameObject.name + "attempting remap");
         if (CurrentTile) return;
 
         _newTile = TileController.Instance.GetTileAtWorldPosition(transform.position);
@@ -156,8 +156,8 @@ public class ActorHandler : MonoBehaviour
     #region AI
     public void BeginTurn()
     {
-        if (_isFriendly) return;
-        Debug.Log("Monster does his movement...");
+        if (_isPlayer) return;
+        Debug.Log("Actor does his movement...");
 
         List<TileHandler> orthoTiles = TileController.Instance.GetOrthogonalTiles(CurrentTile);
 

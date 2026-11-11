@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: _isPlayer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3625485637360447312, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
+      propertyPath: _isAnchoredToTile
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3858785847350763968, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0

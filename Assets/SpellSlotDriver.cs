@@ -94,7 +94,7 @@ public class SpellSlotDriver : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (IsCastable)
         {
-            _loadedSpell.Cast();
+            //_loadedSpell.Cast();
             MagicController.Instance.DetermineCastableSpells();
         }
     }
