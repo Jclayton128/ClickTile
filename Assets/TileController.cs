@@ -40,7 +40,7 @@ public class TileController : MonoBehaviour
     {
         ConstructArena();
         RemapTileLocations();
-        AddTower();
+        //AddTower();
     }
 
 
@@ -239,7 +239,7 @@ public class TileController : MonoBehaviour
 
     public void HandleTileClick(TileHandler clickedTile)
     {
-        if (ActorController.Instance.PriorityActor != ActorController.Instance.Player) return;
+        //if (ActorController.Instance.PriorityActor != ActorController.Instance.Player) return;
         if (_isProcessingClick) return;
         _isProcessingClick = true;
 
@@ -249,7 +249,7 @@ public class TileController : MonoBehaviour
 
         _clickedTile = clickedTile;
 
-        ActorController.Instance.MovePlayer(clickedTile);
+        //ActorController.Instance.MovePlayer(clickedTile);
         
         _orthoTiles = GetOrthogonalTiles(_clickedTile);
         Invoke(nameof(Delay_HandleTileClick), ActorController.Instance.MoveTweenTime);
@@ -275,7 +275,7 @@ public class TileController : MonoBehaviour
     {
         RemapTileLocations();
         HandleClickProcessingComplete();
-        ActorController.Instance.HandlePriorityActorTurnCompletion();
+        //ActorController.Instance.HandlePriorityActorTurnCompletion();
     }
 
 
@@ -442,7 +442,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -475,7 +475,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -507,7 +507,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -540,7 +540,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
