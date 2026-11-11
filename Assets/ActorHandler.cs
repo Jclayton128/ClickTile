@@ -37,6 +37,7 @@ public class ActorHandler : MonoBehaviour
     #region Tile connections
     private void HandleTileRemappingComplete()
     {
+        Debug.Log(gameObject.name + "attempting remap");
         if (CurrentTile) return;
 
         _newTile = TileController.Instance.GetTileAtWorldPosition(transform.position);

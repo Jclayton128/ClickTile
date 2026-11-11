@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
+using DG.Tweening;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class TileController : MonoBehaviour
 {
@@ -27,6 +26,7 @@ public class TileController : MonoBehaviour
     [SerializeField] List<TileHandler> _tilesRaw = new List<TileHandler>();
     Dictionary<Vector2Int, TileHandler> _tilesLocation = new Dictionary<Vector2Int, TileHandler>();
     Queue<TileTypeData> _tilesToRegenerate = new Queue<TileTypeData>();
+    ActorHandler _winningActor = null;
 
     #region Arena Setup
 
@@ -409,6 +409,7 @@ public class TileController : MonoBehaviour
             consumableTileLocations[walker].AbsorbTile(slideDirection);
         }
 
+
         walker = origin;
         walker.x += 1;
         slideDirection = new Vector2(-1, 0);
@@ -454,14 +455,14 @@ public class TileController : MonoBehaviour
 
                 armies.Add(tile.OccupyingActor);
                 armySumPower += tile.OccupyingActor.Power;
-                Debug.Log("registered an army");
+                //Debug.Log("registered an army");
             }
 
             else if (tile.OccupyingActor.IsFriendly == false)
             {
                 enemies.Add(tile.OccupyingActor);
                 enemySumPower += tile.OccupyingActor.Power;
-                Debug.Log("registered an enemy");
+                //Debug.Log("registered an enemy");
             }
         }
 
@@ -469,20 +470,22 @@ public class TileController : MonoBehaviour
 
         if (result > 0)
         {
-            armies[0].transform.parent = _clickedTile.VisualsTransform;
-            armies[0].transform.localPosition = Vector3.zero;
-            armies[0].SetPower(result);
+            _winningActor = armies[0];
+            _winningActor.transform.parent = null;
+            _winningActor.SetPower(result);
         }
         else if (result < 0)
         {
-            enemies[0].transform.parent = _clickedTile.VisualsTransform;
-            enemies[0].transform.localPosition = Vector3.zero;
-            enemies[0].SetPower(result);
+            _winningActor = enemies[0];
+            _winningActor.transform.parent = null;
+            _winningActor.SetPower(Mathf.Abs(result));
         }
         else
         {
-            Debug.Log("combat tie!");
+            //Debug.Log("combat tie!");
+            _winningActor = null;
         }
+
     }
 
     public void DeregisterTile(TileHandler tile)
@@ -492,6 +495,13 @@ public class TileController : MonoBehaviour
 
     private void SlideTilesTowardsOriginTile()
     {
+        if (_winningActor)
+        {
+            _winningActor.transform.DOMove(_clickedTile.VisualsTransform.position, ClickTweenTime - 0.1f);
+            _winningActor.transform.parent = _clickedTile.VisualsTransform;
+            _winningActor = null;
+        }
+
         Vector2Int origin = GetVec2Int(_clickedTile);
 
         Dictionary<Vector2Int, TileHandler> consumableTileLocations = new Dictionary<Vector2Int, TileHandler>();
@@ -531,6 +541,8 @@ public class TileController : MonoBehaviour
                     }
                 }
             }
+
+
         }
 
         if (consumableTileLocations.ContainsKey(new Vector2Int(origin.x + 1, origin.y)))

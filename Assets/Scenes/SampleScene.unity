@@ -282,6 +282,8 @@ MonoBehaviour:
   _arenaSize: 6
   ClickTweenTime: 0.75
   _tilesRaw: []
+  _orthoTiles: []
+  _consumableOrthoTiles: []
 --- !u!4 &278156912
 Transform:
   m_ObjectHideFlags: 0
