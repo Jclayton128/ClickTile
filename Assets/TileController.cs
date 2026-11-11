@@ -259,8 +259,10 @@ public class TileController : MonoBehaviour
     {
         _consumableOrthoTiles = PruneNonconsumableOrthoTiles();
 
-        CollectManaFromTiles();
-        MagicController.Instance.DetermineCastableSpells();
+        //CollectManaFromTiles();
+        //MagicController.Instance.DetermineCastableSpells();
+
+        ExtractPointsFromConsumedTiles();
 
         RemoveConsumedTiles();
         Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
@@ -270,6 +272,7 @@ public class TileController : MonoBehaviour
         float timeToComplete = ClickTweenTime + ClickTweenTime + 0.02f;
         Invoke(nameof(Delay2_HandleTileClick), timeToComplete);
     }
+
 
     private void Delay2_HandleTileClick()
     {
@@ -353,6 +356,34 @@ public class TileController : MonoBehaviour
 
     }
 
+    private void ExtractPointsFromConsumedTiles()
+    {
+        int pointsCollected = 0;
+
+        Dictionary<TileHandler.TileTypes, int> pd = new Dictionary<TileHandler.TileTypes, int>();
+
+        foreach (var tile in _consumableOrthoTiles)
+        {
+            if (!pd.ContainsKey(tile.TileData.TileType))
+            {
+                pd.Add(tile.TileData.TileType, 1);
+            }
+            else
+            {
+                pd[tile.TileData.TileType] += 1;
+            }
+        }
+
+        int walkingPoints;
+        foreach (var tile in _consumableOrthoTiles)
+        {
+            walkingPoints = 0;
+            walkingPoints = tile.Points * pd[tile.TileData.TileType];
+            pointsCollected += walkingPoints;
+        }
+
+        _clickedTile.AddPoints(pointsCollected);
+    }
     private void RemoveConsumedTiles()
     {
         Vector2Int origin = GetVec2Int(_clickedTile);

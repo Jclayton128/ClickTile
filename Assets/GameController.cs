@@ -17,5 +17,11 @@ public class GameController : MonoBehaviour
         TileController.Instance.BuildNewArena();
         //ActorController.Instance.SpawnPlayer();
         //ActorController.Instance.SpawnSlime();
+        MagicController.Instance.ClearAllMana();
+        MagicController.Instance.LoadStartingSpells();
+        MagicController.Instance.DetermineCastableSpells();
+
     }
+
 }
+

@@ -16,6 +16,8 @@ public class TileHandler : MonoBehaviour
     [SerializeField] SpriteRenderer _tileSR = null;
     [SerializeField] SpriteRenderer _iconSR = null;
     [SerializeField] Transform _visualsTransform = null;
+    [SerializeField] TextMeshPro _pointTMP = null;
+
     public Transform VisualsTransform => _visualsTransform;
 
     //settings
@@ -30,6 +32,9 @@ public class TileHandler : MonoBehaviour
     public TileTypeData TileData { get; private set; }
     //public ActorHandler _occupyingActor;
     public ActorHandler OccupyingActor => CheckForOccupyingActor();
+
+    [SerializeField] int _points = 0;
+    public int Points => _points;
 
     private ActorHandler CheckForOccupyingActor()
     {
@@ -59,6 +64,9 @@ public class TileHandler : MonoBehaviour
 
         _tileSR.sprite = tileType.TileSprite;
         _iconSR.sprite = tileType.TileIcon;
+
+        SetPoints(1);
+
     }
 
     #region Mouse Handlers
@@ -178,6 +186,23 @@ public class TileHandler : MonoBehaviour
     {
         _hoverTween.Kill();
         _hoverTween = _visualsTransform.DOLocalMoveY(0, hoverTweenTime).SetEase(Ease.OutBack);
+    }
+
+    #endregion
+
+
+    #region Point Mechanics
+
+    public void AddPoints(int pointsToAdd)
+    {
+        _points += pointsToAdd;
+        _pointTMP.text = _points.ToString();
+    }
+
+    public void SetPoints(int pointsToSetAt)
+    {
+        _points = pointsToSetAt;
+        _pointTMP.text = _points.ToString();   
     }
 
     #endregion

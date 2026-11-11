@@ -33,10 +33,8 @@ public class ActorController : MonoBehaviour
         _player.HandleInitialTilePlacement(TileController.Instance.GetTileAtVec2Int(_playerStartingSpot));
         AddActorToStartOfTurnOrder(_player);
 
-        MagicController.Instance.ClearAllMana();
-        MagicController.Instance.LoadStartingSpells();
-        MagicController.Instance.DetermineCastableSpells();
     }
+
 
     public void MovePlayer(TileHandler destinationTile)
     {
