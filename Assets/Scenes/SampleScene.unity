@@ -279,7 +279,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e1930c3c7c94d648aa478f0715de4f6, type: 2}
   - {fileID: 11400000, guid: f181ca95b646e114e8196e1a3da84a06, type: 2}
   _towerPrefab: {fileID: 5422821298189269905, guid: b4e4a75a45cfb1a4e9716b18aa54422f, type: 3}
-  _arenaSize: 7
+  _arenaSize: 6
   ClickTweenTime: 0.75
   _tilesRaw: []
 --- !u!4 &278156912
@@ -312,6 +312,7 @@ MonoBehaviour:
   _wizardPrefab: {fileID: 3559088464303597345, guid: 7d4664c4f5d6e1b47b90b85c7c21213d, type: 3}
   _slimePrefab: {fileID: 1386633204982307006, guid: 0e546ef3eae28684b800e6c655950666, type: 3}
   _flyPrefab: {fileID: 8939693308450569683, guid: e650ee14ecb37ae49826426a35a4a788, type: 3}
+  _armyPrefab: {fileID: 3559088464303597345, guid: 4ba8d882b8bc35445b2f3e07ccdf7300, type: 3}
   MoveTweenTime: 0.75
   _actorTurnOrder: []
 --- !u!114 &278156914
@@ -368,6 +369,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9117e761a25b52b45af1adc56ef3d7d8, type: 2}
   - {fileID: 11400000, guid: 2d45a22be666bdd44b2a3c8bce887f2d, type: 2}
   - {fileID: 11400000, guid: cc18a6c39ce14f94a887d55af51bba46, type: 2}
+  - {fileID: 11400000, guid: 5170f20cfe9449c4d903ec7212d0185e, type: 2}
   _manaSupply: 00000000000000000000000000000000
 --- !u!1001 &370654300
 PrefabInstance:

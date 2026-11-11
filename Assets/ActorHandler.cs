@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using TMPro;
 
 public class ActorHandler : MonoBehaviour
 {
     //ref
-    [SerializeField] bool _isPlayer = false;
+    [SerializeField] bool _isFriendly = false;
     [SerializeField] bool _canBeTargetedByPlayerSpell = false;
     [SerializeField] bool _isAnchoredToTile = true;
     [SerializeField] bool _immobilizesTile = false;
     [SerializeField] SpriteRenderer _visualSR = null;
+    [SerializeField] TextMeshPro _powerTMP = null;
 
+    [SerializeField] bool _isConsumable = true;
 
     //state
     Tween _fadeTween;
@@ -20,13 +23,18 @@ public class ActorHandler : MonoBehaviour
     float _remainingTweenTime;
     public bool ImmobilizesTile => _immobilizesTile;
     public TileHandler CurrentTile => transform.parent.parent.GetComponent<TileHandler>();
-    public bool CanBeTargetedByPlayerSpell => _canBeTargetedByPlayerSpell;  
+    public bool CanBeTargetedByPlayerSpell => _canBeTargetedByPlayerSpell;
+    [SerializeField] int _power = 1;
+    public int Power => _power;
+    public bool IsFriendly => _isFriendly;
+    public bool IsConsumable => _isConsumable;
 
     private void Start()
     {
         TileController.Instance.TileRemappingComplete += HandleTileRemappingComplete;
     }
 
+    #region Tile connections
     private void HandleTileRemappingComplete()
     {
         if (CurrentTile) return;
@@ -120,7 +128,6 @@ public class ActorHandler : MonoBehaviour
         _fadeTween = _visualSR.DOFade(1, _remainingTweenTime).SetEase(Ease.OutCubic);
     }
 
-
     private void HandleTileSliding()
     {
         if (_isAnchoredToTile)
@@ -133,10 +140,22 @@ public class ActorHandler : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Power
+
+    public void SetPower(int power)
+    {
+        _power = power;
+        _powerTMP.text = power.ToString();  
+    }
+
+    #endregion
+
     #region AI
     public void BeginTurn()
     {
-        if (_isPlayer) return;
+        if (_isFriendly) return;
         Debug.Log("Monster does his movement...");
 
         List<TileHandler> orthoTiles = TileController.Instance.GetOrthogonalTiles(CurrentTile);

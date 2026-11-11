@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class TileController : MonoBehaviour
 {
@@ -84,8 +84,9 @@ public class TileController : MonoBehaviour
         TileHandler newTile = Instantiate(_tilePrefab, _tileHolder);
         newTile.transform.position = location;
 
-        int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
-        newTile.SetTile(_tileTypesRaw[rand]);
+        int rand = UnityEngine.Random.Range(0, 1);
+        //int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
+        newTile.SetTile(_tileTypesRaw[rand], _tilesRaw.Count);
 
         _tilesRaw.Add(newTile);
     }
@@ -98,12 +99,12 @@ public class TileController : MonoBehaviour
 
         if (_tilesToRegenerate.Count > 0)
         {
-            newTile.SetTile(_tilesToRegenerate.Dequeue());
+            newTile.SetTile(_tilesToRegenerate.Dequeue(), _tilesRaw.Count);
         }
         else
         {
             int rand = UnityEngine.Random.Range(0, _tileTypesRaw.Count);
-            newTile.SetTile(_tileTypesRaw[rand]);
+            newTile.SetTile(_tileTypesRaw[rand], _tilesRaw.Count);
         }
 
 
@@ -141,6 +142,36 @@ public class TileController : MonoBehaviour
     #endregion
 
     #region Helpers
+
+    public TileHandler FindRandomUnoccupiedTile()
+    {
+        TileHandler output = null;
+       
+        List<TileHandler> randTiles = new List<TileHandler>(_tilesRaw);
+        Shuffle(ref randTiles);
+        for (int i = randTiles.Count - 1; i >= 0; i--)
+        {
+            if (randTiles[i].OccupyingActor == null)
+            {
+                return randTiles[i];
+            }
+        }
+
+        return null;
+    }
+
+    public void Shuffle(ref List<TileHandler> list)
+    {
+        System.Random r = new System.Random();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = r.Next(n + 1);
+            // Swap items
+            (list[k], list[n]) = (list[n], list[k]);
+        }
+    }
 
     public Sprite GetManaSprite(TileHandler.TileTypes manaType)
     {
@@ -234,8 +265,8 @@ public class TileController : MonoBehaviour
 
     #region Gameplay
     TileHandler _clickedTile;
-    List<TileHandler> _orthoTiles = new List<TileHandler>();
-    List<TileHandler> _consumableOrthoTiles = new List<TileHandler>();
+    [SerializeField] List<TileHandler> _orthoTiles = new List<TileHandler>();
+    [SerializeField] List<TileHandler> _consumableOrthoTiles = new List<TileHandler>();
 
     public void HandleTileClick(TileHandler clickedTile)
     {
@@ -262,7 +293,7 @@ public class TileController : MonoBehaviour
         CollectManaFromTiles();
         MagicController.Instance.DetermineCastableSpells();
 
-        RemoveConsumedTiles();
+        ConsumeTiles();
         Invoke(nameof(SlideTilesTowardsOriginTile), ClickTweenTime - 0.1f); //ClickTweenTime + 
 
         //VibrateNonconsumedOrthoTiles
@@ -288,9 +319,10 @@ public class TileController : MonoBehaviour
 
         foreach (var tile in _orthoTiles)
         {
-            if (tile.OccupyingActor != null) continue;
-            else
-            {
+            //consumableOrthoTiles.Add(tile);
+            if (tile.OccupyingActor == null ||
+                (tile.OccupyingActor && tile.OccupyingActor.IsConsumable))
+            { 
                 consumableOrthoTiles.Add(tile);
             }
         }
@@ -353,13 +385,13 @@ public class TileController : MonoBehaviour
 
     }
 
-    private void RemoveConsumedTiles()
+    private void ConsumeTiles()
     {
         Vector2Int origin = GetVec2Int(_clickedTile);
 
         List<TileTypeData> consumedTileTypes = new List<TileTypeData>();    
 
-        Vector2Int walker = origin;
+
         Dictionary<Vector2Int, TileHandler> consumableTileLocations = new Dictionary<Vector2Int, TileHandler>();
         foreach (var tile in _consumableOrthoTiles)
         {
@@ -367,6 +399,9 @@ public class TileController : MonoBehaviour
             _tilesToRegenerate.Enqueue(tile.TileData);
         }
 
+        ExtractEffectsFromConsumedTiles();
+
+        Vector2Int walker = origin;
         walker.x -= 1;
         Vector2 slideDirection = new Vector2(1, 0);
         if (consumableTileLocations.ContainsKey(walker))
@@ -377,10 +412,15 @@ public class TileController : MonoBehaviour
         walker = origin;
         walker.x += 1;
         slideDirection = new Vector2(-1, 0);
+
+
+
         if (consumableTileLocations.ContainsKey(walker))
         {
             consumableTileLocations[walker].AbsorbTile(slideDirection);
         }
+
+
         walker = origin;
         walker.y -= 1;
         slideDirection = new Vector2(0, 1 * _yFactor);
@@ -400,6 +440,50 @@ public class TileController : MonoBehaviour
 
     }
 
+    private void ExtractEffectsFromConsumedTiles()
+    {
+        List<ActorHandler> armies = new List<ActorHandler>();
+        List<ActorHandler> enemies = new List<ActorHandler>();
+        int armySumPower = 0;
+        int enemySumPower = 0;
+        foreach (var tile in _consumableOrthoTiles)
+        {
+            if (tile.OccupyingActor == null) continue;
+            if (tile.OccupyingActor.IsFriendly)
+            {
+
+                armies.Add(tile.OccupyingActor);
+                armySumPower += tile.OccupyingActor.Power;
+                Debug.Log("registered an army");
+            }
+
+            else if (tile.OccupyingActor.IsFriendly == false)
+            {
+                enemies.Add(tile.OccupyingActor);
+                enemySumPower += tile.OccupyingActor.Power;
+                Debug.Log("registered an enemy");
+            }
+        }
+
+        int result = armySumPower - enemySumPower;
+
+        if (result > 0)
+        {
+            armies[0].transform.parent = _clickedTile.VisualsTransform;
+            armies[0].transform.localPosition = Vector3.zero;
+            armies[0].SetPower(result);
+        }
+        else if (result < 0)
+        {
+            enemies[0].transform.parent = _clickedTile.VisualsTransform;
+            enemies[0].transform.localPosition = Vector3.zero;
+            enemies[0].SetPower(result);
+        }
+        else
+        {
+            Debug.Log("combat tie!");
+        }
+    }
 
     public void DeregisterTile(TileHandler tile)
     {

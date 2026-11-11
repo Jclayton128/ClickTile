@@ -18,5 +18,6 @@ MonoBehaviour:
   _effects: 
   _depiction: 0
   _projectilePrefab: {fileID: 7711652678940231318, guid: 9f46a5c171656ca479049cd1890c5e0e, type: 3}
+  _depictionLength: 0.5
   _range: 2
-  _magnitude: 1
+  _magnitude: 3

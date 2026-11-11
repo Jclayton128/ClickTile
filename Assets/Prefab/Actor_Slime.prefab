@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2064594110932219179, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.3856802
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625485637360447312, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
+      propertyPath: _isAnchoredToTile
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3625485637360447312, guid: 07e28b4116e446c4caabcd6ada42e815, type: 3}
       propertyPath: _canBeTargetedByPlayerSpell
       value: 1

@@ -45,9 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9de70df9010bf8843bf7948be1254c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAnchoredToTile: 1
+  _isFriendly: 0
+  _canBeTargetedByPlayerSpell: 0
+  _isAnchoredToTile: 0
   _immobilizesTile: 0
   _visualSR: {fileID: 5108112106848574656}
+  _powerTMP: {fileID: 0}
+  _isConsumable: 0
+  _power: 1
 --- !u!1 &7256153738201842837
 GameObject:
   m_ObjectHideFlags: 0

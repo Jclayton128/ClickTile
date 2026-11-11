@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     {
         TileController.Instance.BuildNewArena();
         ActorController.Instance.SpawnPlayer();
+        ActorController.Instance.SpawnArmy();
         ActorController.Instance.SpawnSlime();
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ public class ActorController : MonoBehaviour
     [SerializeField] ActorHandler _wizardPrefab;
     [SerializeField] ActorHandler _slimePrefab;
     [SerializeField] ActorHandler _flyPrefab;
+    [SerializeField] ActorHandler _armyPrefab;
     public float MoveTweenTime = 0.75f;
     Vector2Int _playerStartingSpot = new Vector2Int(3, 2); //Just below the tower.
 
@@ -38,6 +40,15 @@ public class ActorController : MonoBehaviour
         MagicController.Instance.DetermineCastableSpells();
     }
 
+    public void SpawnArmy()
+    {
+        TileHandler randomOpenTile = TileController.Instance.FindRandomUnoccupiedTile();
+
+        ActorHandler army = Instantiate(_armyPrefab, randomOpenTile.VisualsTransform);
+        army.SetPower(3);
+        //AddActorToEndOfTurnOrder(army);
+    }
+
     public void MovePlayer(TileHandler destinationTile)
     {
         _player.TeleportToNewTile(destinationTile, MoveTweenTime);
@@ -53,10 +64,12 @@ public class ActorController : MonoBehaviour
     [ContextMenu("Spawn Slime")]
     public void SpawnSlime()
     {
-        TileHandler tileToPlaceAt = TileController.Instance.GetTileAtVec2Int(new Vector2Int(1, 4));
-        ActorHandler slime = Instantiate(_slimePrefab, tileToPlaceAt.VisualsTransform);
+        //TileHandler tileToPlaceAt = TileController.Instance.GetTileAtVec2Int(new Vector2Int(1, 4));
 
-        AddActorToEndOfTurnOrder(slime);
+        TileHandler randomOpenTile = TileController.Instance.FindRandomUnoccupiedTile();
+        ActorHandler slime = Instantiate(_slimePrefab, randomOpenTile.VisualsTransform);
+        slime.SetPower(2);
+        //AddActorToEndOfTurnOrder(slime);
     }
 
     #region Turn Mechanics

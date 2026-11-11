@@ -51,7 +51,7 @@ public class TileHandler : MonoBehaviour
         _coll = GetComponent<Collider2D>();
     }
 
-    public void SetTile(TileTypeData tileType)
+    public void SetTile(TileTypeData tileType, int indexName)
     {
         TileData = tileType;
 
@@ -60,6 +60,7 @@ public class TileHandler : MonoBehaviour
 
         _tileSR.sprite = tileType.TileSprite;
         _iconSR.sprite = tileType.TileIcon;
+        gameObject.name = $"Tile_{indexName}";
     }
 
     #region Mouse Handlers
@@ -114,6 +115,11 @@ public class TileHandler : MonoBehaviour
     public void AbsorbTile(Vector2 direction)
     {
         TileController.Instance.DeregisterTile(this);
+        if (OccupyingActor)
+        {
+            OccupyingActor.DestroySelf();
+        }
+
         _coll.enabled = false;
 
         //SlideTile(direction);
