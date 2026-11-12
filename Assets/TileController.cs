@@ -14,6 +14,7 @@ public class TileController : MonoBehaviour
     [SerializeField] Transform _tileHolder = null;
     [SerializeField] TileHandler _tilePrefab = null;
     [SerializeField] List<TileTypeData> _tileTypesRaw = null;
+    [SerializeField] List<TileTypeData> _tileTypeLavas = null;
     [SerializeField] GameObject _towerPrefab = null;
 
     //settings
@@ -25,8 +26,12 @@ public class TileController : MonoBehaviour
     //state
     bool _isProcessingClick = false;
     [SerializeField] List<TileHandler> _tilesRaw = new List<TileHandler>();
+    public List<TileHandler> Tiles => _tilesRaw;
     Dictionary<Vector2Int, TileHandler> _tilesLocation = new Dictionary<Vector2Int, TileHandler>();
     Queue<TileTypeData> _tilesToRegenerate = new Queue<TileTypeData>();
+
+    TileHandler _currentlyHighlightedTile = null;
+    TileHandler _previousHighlightedTile = null;
 
     #region Arena Setup
 
@@ -98,7 +103,9 @@ public class TileController : MonoBehaviour
 
         if (_tilesToRegenerate.Count > 0)
         {
-            newTile.SetTile(_tilesToRegenerate.Dequeue());
+            int rand = UnityEngine.Random.Range(0, _tileTypeLavas.Count);
+            newTile.SetTile(_tileTypeLavas[rand]);
+            //newTile.SetTile(_tilesToRegenerate.Dequeue());
         }
         else
         {
@@ -340,9 +347,9 @@ public class TileController : MonoBehaviour
                 MagicController.Instance.GainMana(TileHandler.TileTypes.RockDeath);
             }
 
-            else if(tile.TileData.TileType == TileHandler.TileTypes.SnowAir)
+            else if(tile.TileData.TileType == TileHandler.TileTypes.SnowWater)
             {
-                MagicController.Instance.GainMana(TileHandler.TileTypes.SnowAir);
+                MagicController.Instance.GainMana(TileHandler.TileTypes.SnowWater);
             }
 
             else if(tile.TileData.TileType == TileHandler.TileTypes.SandAir)
@@ -373,6 +380,18 @@ public class TileController : MonoBehaviour
                 pd[tile.TileData.TileType] += 1;
             }
         }
+
+        //Consider the clicked tile too
+        if (!pd.ContainsKey(_clickedTile.TileData.TileType))
+        {
+            pd.Add(_clickedTile.TileData.TileType, 1);
+        }
+        else
+        {
+            pd[_clickedTile.TileData.TileType] += 1;
+        }
+
+
 
         int walkingPoints;
         foreach (var tile in _consumableOrthoTiles)
@@ -473,7 +492,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -506,7 +525,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -538,7 +557,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -571,7 +590,7 @@ public class TileController : MonoBehaviour
                     else
                     {
                         //gap detected, spawn new tile
-                        //CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
+                        CreateNewTile(new Vector2(walker.x, walker.y * _yFactor), slideVector);
                         break;
                     }
                 }
@@ -612,6 +631,20 @@ public class TileController : MonoBehaviour
         {
             tile.UnraiseTile();
         }
+    }
+
+    public void UnraiseLastHighlightedTile()
+    {
+        if (_previousHighlightedTile == null) return;
+        _previousHighlightedTile.UnraiseTile();
+    }
+
+    public void RegisterTileAsHighlighted(TileHandler tile)
+    {
+        UnraiseLastHighlightedTile();
+        _previousHighlightedTile = _currentlyHighlightedTile;
+        _currentlyHighlightedTile = tile;
+        
     }
 
     public void HalfraiseAllOrthogonalTiles(TileHandler originTile)

@@ -10,10 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96944d46f495ab04baa70f6d518ed5b5, type: 3}
-  m_Name: _Water
+  m_Name: _Lava0 3
   m_EditorClassIdentifier: 
-  _tileType: 0
-  _color: {r: 0.754717, g: 0.13906208, b: 0.06763971, a: 1}
-  _icon: {fileID: 21300000, guid: 4af0b20734e249140aa805350466c4e0, type: 3}
-  _prey: 
-  _monoletter: Sn
+  _tileType: 6
+  _tileSprite: {fileID: 21300000, guid: 082aadcce7dbd1343a520aff544ddbc2, type: 3}
+  _tileIcon: {fileID: 0}

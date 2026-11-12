@@ -7,7 +7,7 @@ using System;
 
 public class TileHandler : MonoBehaviour
 {
-    public enum TileTypes { Undefined, DirtFire, GrassEarth, RockDeath, SnowAir, SandAir}
+    public enum TileTypes { Undefined, DirtFire, GrassEarth, RockDeath, SnowWater, SandAir, LavaNull}
 
     public Action TileSliding;
 
@@ -65,7 +65,17 @@ public class TileHandler : MonoBehaviour
         _tileSR.sprite = tileType.TileSprite;
         _iconSR.sprite = tileType.TileIcon;
 
-        SetPoints(1);
+        if (tileType.TileType == TileTypes.LavaNull)
+        {
+            SetPoints(0);
+            float r = UnityEngine.Random.Range(0, .3f);
+            VisualsTransform.DOBlendableLocalMoveBy(Vector3.up * 0.05f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetDelay(r);
+        }
+        else
+        {
+            SetPoints(1);
+        }
+
 
     }
 
@@ -73,12 +83,13 @@ public class TileHandler : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        TileController.Instance.RegisterTileAsHighlighted(this);
         //_sizeTween.Kill();
         //_sizeTween = transform.DOScale(Vector2.one * _scaleIncrease, hoverTweenTime).SetEase(Ease.OutBack);
 
         if (_slideTween.IsActive()) return;
 
-        TileController.Instance.UnraiseAllTiles();
+        //TileController.Instance.UnraiseAllTiles();
         //TileController.Instance.HalfraiseAllOrthogonalTiles(this);
         FullraiseTile();
     }
@@ -91,7 +102,6 @@ public class TileHandler : MonoBehaviour
         //if (_slideTween.IsActive()) return;
 
         UnraiseTile();
-
         //DimTile();
 
     }
@@ -195,14 +205,26 @@ public class TileHandler : MonoBehaviour
 
     public void AddPoints(int pointsToAdd)
     {
+        //Can't add points to Lava
+        if (TileData.TileType == TileTypes.LavaNull) return;
+
         _points += pointsToAdd;
         _pointTMP.text = _points.ToString();
     }
 
     public void SetPoints(int pointsToSetAt)
     {
-        _points = pointsToSetAt;
-        _pointTMP.text = _points.ToString();   
+        if (pointsToSetAt > 0)
+        {
+            _points = pointsToSetAt;
+            _pointTMP.text = _points.ToString();
+        }
+        else
+        {
+            _points = 0;
+            _pointTMP.text = "";
+        }
+
     }
 
     #endregion
