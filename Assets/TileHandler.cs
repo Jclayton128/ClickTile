@@ -137,6 +137,7 @@ public class TileHandler : MonoBehaviour
 
         _tileSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
         _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
+        _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
         _visualsTransform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
 
 
@@ -160,7 +161,10 @@ public class TileHandler : MonoBehaviour
         _slideTween = transform.DOBlendableMoveBy(new Vector3(slideVector.x, slideVector.y, 0), TileController.Instance.ClickTweenTime).SetEase(Ease.OutBounce);
     }
 
-  
+    public void FadePointValue()
+    {
+        _pointTMP.DOFade(0, 0.01f);
+    }
 
     public void DimTile()
     {

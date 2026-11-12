@@ -16,6 +16,8 @@ public class TileController : MonoBehaviour
     [SerializeField] List<TileTypeData> _tileTypesRaw = null;
     [SerializeField] List<TileTypeData> _tileTypeLavas = null;
     [SerializeField] GameObject _towerPrefab = null;
+    [SerializeField] WispHandler _wispPrefab = null;
+
 
     //settings
     [SerializeField] int _arenaSize = 7;
@@ -379,6 +381,8 @@ public class TileController : MonoBehaviour
             {
                 pd[tile.TileData.TileType] += 1;
             }
+
+            tile.FadePointValue();
         }
 
         //Consider the clicked tile too
@@ -391,14 +395,15 @@ public class TileController : MonoBehaviour
             pd[_clickedTile.TileData.TileType] += 1;
         }
 
-
-
-        int walkingPoints;
+        int pointsToAdd;
         foreach (var tile in _consumableOrthoTiles)
         {
-            walkingPoints = 0;
-            walkingPoints = tile.Points * pd[tile.TileData.TileType];
-            pointsCollected += walkingPoints;
+            pointsToAdd = tile.Points * pd[tile.TileData.TileType];
+
+            WispHandler wisp = Instantiate(_wispPrefab, tile.VisualsTransform.position, Quaternion.identity);
+            wisp.SetWisp($"{pointsToAdd}", 3f);
+
+            pointsCollected += pointsToAdd;
         }
 
         _clickedTile.AddPoints(pointsCollected);

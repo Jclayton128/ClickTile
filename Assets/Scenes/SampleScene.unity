@@ -285,6 +285,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 72f537276c4a6494d8510a0f742fcd1a, type: 2}
   - {fileID: 11400000, guid: 5a7a25df13f043243bebe25311778b5c, type: 2}
   _towerPrefab: {fileID: 5422821298189269905, guid: b4e4a75a45cfb1a4e9716b18aa54422f, type: 3}
+  _wispPrefab: {fileID: 660243272387371203, guid: fafad6f7535e2f645bd18e1c8eac734b, type: 3}
   _arenaSize: 7
   ClickTweenTime: 0.6
   _tilesRaw: []
