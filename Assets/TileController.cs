@@ -400,10 +400,12 @@ public class TileController : MonoBehaviour
         {
             pointsToAdd = tile.Points * pd[tile.TileData.TileType];
 
-            WispHandler wisp = Instantiate(_wispPrefab, tile.VisualsTransform.position, Quaternion.identity);
-            wisp.SetWisp($"{pointsToAdd}", 3f);
-
-            pointsCollected += pointsToAdd;
+            if (pointsToAdd > 0)
+            {
+                WispHandler wisp = Instantiate(_wispPrefab, tile.VisualsTransform.position, Quaternion.identity);
+                wisp.SetWisp($"{pointsToAdd}", 3f);
+                pointsCollected += pointsToAdd;
+            }
         }
 
         _clickedTile.AddPoints(pointsCollected);

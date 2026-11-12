@@ -12,7 +12,8 @@ public class WispHandler : MonoBehaviour
     public void SetWisp(string wispText, float time)
     {
         _tmp.text = wispText;
-        transform.DOBlendableLocalMoveBy(Vector3.up * 0.3f, time).OnComplete(CompleteWisp);
+        transform.DOBlendableLocalMoveBy(Vector3.up * 0.1f, time).OnComplete(CompleteWisp);
+        transform.DOScale(Vector3.one * 1.3f, time);
         _tmp.DOFade(0, time).SetEase(Ease.OutCirc);
     }
 

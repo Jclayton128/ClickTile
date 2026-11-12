@@ -138,7 +138,7 @@ public class TileHandler : MonoBehaviour
         _tileSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
         _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
         _iconSR.DOFade(0, TileController.Instance.ClickTweenTime).SetEase(Ease.InCubic);
-        _visualsTransform.DOLocalMoveY(0.2f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
+        _visualsTransform.DOLocalMoveY(-0.4f, TileController.Instance.ClickTweenTime).OnComplete(RemoveTile);
 
 
         //_sizeTween.Kill();
